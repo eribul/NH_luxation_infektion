@@ -23,6 +23,13 @@ df <-
         c("University", "County", "Rural", "Private"),
       ),
     P_Sex = factor(P_Gender, c("Kvinna", "Man"), c("Female", "Male")),
+    P_BMI = cut(
+      P_BMI,
+      c(0, 25, 30, 35, 50),
+      c("under/normal weight", "overweight", "class I obesity",
+        "class II-III obesity"),
+      right = FALSE
+    ),
 
     # Survival
     stime   =
