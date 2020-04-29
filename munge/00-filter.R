@@ -6,24 +6,6 @@ dubbles <-
   filter(n > 1)
 
 
-# Patients with second hip operated dwithin two years after the first one
-within2yrs <-
-  df_shpr_orig %>%
-  anti_join(dubbles, "LopNr") %>%
-  select(LopNr, opnr, P_SurgDate) %>%
-  pivot_wider(names_from = opnr, values_from = P_SurgDate) %>%
-  filter(!is.na(`1`), !is.na(`2`)) %>%
-  mutate(timediff = as.numeric(`2` - `1`)) %>%
-  filter(timediff < 2 * 365) %>%
-  mutate(within2yrs = TRUE)
-
-# Add column "withni2yrs" to identify patients with their 2nd op withni 2 years
-df_shpr_tmp <-
-  df_shpr_orig %>%
-  left_join(within2yrs, "LopNr")
-
-
-
 # Define filter steps -----------------------------------------------------
 
 # Make tibble with one row per filter step and columns:
@@ -39,7 +21,7 @@ filters <-
     tibble(
       step = 0,
       incl = "all",
-      data = list(df_shpr_tmp)
+      data = list(df_shpr_orig)
     ),
 
     tibble(
@@ -54,29 +36,33 @@ filters <-
       ))
     ),
 
+
     tibble(
       step = 2,
-      excl = "Diagnose: fracture/tumour/unspecified/unknown.",
+      excl = "First THA for bilateral cases",
+      incl = "Last operated hip",
+      expr = list(quo(op_last == 1))
+    ),
+
+    tibble(
+      step = 2,
+      excl = "Died within 2 years of THA",
+      incl = "Last operated hip",
+      expr = list(quo(
+        is.na(DateOfDeath) | as.numeric(DateOfDeath - P_SurgDate) > 2 * 365.241
+        ))
+    ),
+
+    tibble(
+      step = 3,
+      excl = "Diagnosis: Fracture/tumour/unspecified/unknown.",
       incl = "Elective THA",
       expr = list(quo(!P_DiaGrp %in% c(
         "Akut trauma, höftfraktur",
         "Akut trauma, övriga",
         "Tumör",
-        "Övrigt")))
-    ),
-
-    tibble(
-      step = 3,
-      excl = "First THA for bilateral cases",
-      incl = "Patients with elective THA",
-      expr = list(quo(op_first == 1))
-    ),
-
-    tibble(
-      step = 3,
-      excl = "Second THA within 2 years",
-      incl = "Patients with elective THA",
-      expr = list(quo(is.na(within2yrs)))
+        "Övrigt",
+        NA)))
     ),
 
     tibble(
@@ -133,13 +119,6 @@ filters <-
       excl = "Missing type of hospital",
       incl = "Total study population",
       expr = list(quo(!is.na(P_TypeOfHospital)))
-    ),
-
-    tibble(
-      step = 4,
-      excl = "Missing diagnoses",
-      incl = "Total study population",
-      expr = list(quo(!is.na(P_DiaGrp)))
     ),
 
     tibble(
