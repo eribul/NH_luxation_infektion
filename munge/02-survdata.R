@@ -22,7 +22,7 @@ df <-
       factor(P_TypeOfHospital, levels(P_TypeOfHospital),
         c("University", "County", "Rural", "Private"),
       ),
-    P_Sex = factor(P_Gender, c("Man", "Kvinna"), c("Male", "Female")),
+    P_Sex = factor(P_Gender, c("Kvinna", "Man"), c("Female", "Male")),
 
     # Survival
     stime   =
@@ -71,8 +71,6 @@ df <-
     -P_KVA1,
     -P_ProstType,
     -P_Gender,
-    -`1`, -`2`,
-    -within2yrs, -timediff,
     -op_first, -op_last,
     -contains("index"),
     elix_icd10_index_sum_all,
