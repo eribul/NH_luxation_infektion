@@ -1,8 +1,8 @@
 # Förbered kompisitvariabler som ev kan ersätta enskilda diagnoser
 
 # Fulfix!
-# Fel i coder-paketet döpte "malignancy" till "malingnancy"
-# Ska funka korrekt med senaste coder-version men vill inte köra om just nu!
+# Tidigare Fel i coder-paketet döpte "malignancy" till "malingnancy".
+# Nu åtgärdat i paketet men fortf fel i samkörningsdatabsen
 df <- rename(df, CCI_malignancy = CCI_malingnancy)
 
 

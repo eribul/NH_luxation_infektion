@@ -58,11 +58,11 @@ comb_lgl <-
 
 comb_fct_tmp <-
   df0 %>%
-  select_if(is.factor)
+  select(is.factor)
 
 n_lvls <-
   comb_fct_tmp %>%
-  summarise_all(n_distinct) %>%
+  summarise(across(, n_distinct)) %>%
   pivot_longer(everything(), values_to = "n_lvls")
 
 # Factor variables with less than 10 observations per outcome
@@ -77,11 +77,7 @@ comb_fct <- function(y) {
   ) %>%
   unnest(data) %>%
   pivot_wider(names_from = y, values_from = n) %>%
-  mutate(
-    name = if_else(duplicated(name), "", name)
-  ) %>%
   select(-n_lvls) %>%
-  mutate(name = zoo::na.locf(na_if(name, ""))) %>%
   filter_at(vars(`FALSE`, `TRUE`), any_vars(. < 10)) %>%
   transmute(excl = paste0(name, " != '", value, "'")) %>%
   pluck(1)
