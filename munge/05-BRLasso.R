@@ -1,0 +1,19 @@
+# Perform calculations (time consuming)
+
+best_coefs_fun <- function(df_model) {
+  tibble(B = seq_len(config$Bmax)) %>%
+  mutate(
+    coefs_all = future_map(B, ~ BR_lasso_coefs(df_model), .progress = TRUE),
+    breaks    = map_dbl(coefs_all, break_p),
+    coefs     = map2(coefs_all, breaks, ~slice(.x, seq_len(.y)))
+  )
+}
+
+
+model_data <-
+  model_data %>%
+  mutate(
+    best_coefs_tmp = map(df_model, best_coefs_fun)
+  )
+
+cache("model_data")

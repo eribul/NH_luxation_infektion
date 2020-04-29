@@ -1,0 +1,191 @@
+---
+title: "Title"
+author: X^1,2,3^, Y^2,4^, ... Z^5^
+date: '`r Sys.Date()`'
+bibliography: H:/zotero_lib.bib
+csl: the-lancet.csl
+output: 
+  bookdown::word_document2:
+    reference_docx: article.dotx
+    toc: false
+    df_print: kable
+---
+
+```{r setup, include = FALSE}
+options(
+  digits         = 2,
+  knitr.kable.NA = '',
+  repos          = list(CRAN = "https://cran.rstudio.com/")
+)
+
+knitr::opts_chunk$set(
+  echo       = FALSE,
+  out.width  = "100%", 
+  out.height = "100%"
+)
+
+library(tidyverse)
+```
+
+## Affiliations
+
+1. Department of Orthopaedics, Institute of Surgical Sciences, Uppsala University Hospital, Uppsala, Sweden
+2. The Swedish Hip Arthroplasty Register, Gothenburg, Sweden
+3. Department of Orthopaedics, Institute of Clinical Sciences, The Sahlgrenska Academy, University of Gothenburg, Gothenburg, Sweden
+4. ...
+5. ...
+
+
+
+##### PAGE BREAK
+
+# Abstract
+
+**SUBTITLE 1** Paragraph 1 ...
+
+**SUBTITLE 2** Paragraph 2 ...
+
+**SUBTITLE 3** Paragraph 3 ...
+
+
+##### PAGE BREAK
+
+# Introduction
+
+
+# Patients and Methods
+
+We used data from two national quality registers 2008-2015: The Swedish hip arthroplasty register (SHAR), with a completeness of 96-98%,[@Karrholm2018] for model development and internal validation, and XXX for external validation. 
+
+SHAR was linked using Swedish personal identity numbers[@Ludvigsson2009] to enhance the variable set with education and civil status from Statistics Sweden,[@Ludvigsson2019] comorbidity and adverse events from the national patient register,[@Ludvigsson2011] and prescribed medications from the medical prescription register.[@Cnudde2016]
+We excluded patients with hip arthroplasty due to fractures, tumours, unspecified, or unknown reasons. We included patients with either unilateral THA, or with their second staged bilateral hip.[@Bulow2020] Patients younger than 18 or older than 100 years were excluded, as were patients with a body mass index (BMI) above 50, or with missing data on BMI, ASA class, education, type of hospital, and cementation (Figure \@ref(fig:flowchart)).
+
+
+
+Comorbidity, during one year before surgery, was based on the Swedish version of the 10th revsin of the international classification of diseases (ICD-10-SE), as recorded at any hospital physician appointment prior to surgery. Individual codes were then combined using Charlson and Elixhauser comorbidity groups.[@Quan2005] A similar procedure was performed for codes of the anatomical therapeutic chemical (ATC) classification, grouped by Rx Risk V.[@Pratt2018] Similar conditions were then combined to a broader classification scheme based on clinical relevance, and those categories were used as possible predictors (Table \@ref(tab:tabcategorization)).
+
+Infections within 90 days and 2 years respectively, were identified by relevant ICD-10-SE codes, or by codes from the Classification of Surgical Procedures (NCSP) from the Nordic Medico-Statistical Committee (NOMESCO) recorded in the national patient register. An infection was also identified if causing a reoperation recorded to SHAR.
+
+
+
+
+## Statistical analysis for model development
+
+Infections within 90 days or 2 years were modelled with logistic regression, ignoring possi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+We used the Kaplan-Meier estimator to assess unadjusted mortality after cemented THA. Further analysis was based on logistic regression, since no loss to follow up occurred in the Swedish cohort within the first 90 days, and we assumed the same was true for patients from England and Wales. We used a modelling procedure with bootstrap ranking and a logistic least absolute shrinkage and selection operator (LASSO).[@Guo2015; @Baranowski2020] Numeric variables (age and BMI) were normalized before modelling to have mean = 0 and standard deviation = 1. Thus, the magnitude (absolute values) of their estimated coefficients would indicate variable importance on the same scale as the categorical variables. Co-morbidities recorded for at least one patient who died within 90 days, and one who did not, were included in the modelling process. 1,000 bootstrap samples were drawn from the observed data set.[@Austin2004] We used 10-fold cross validation for every bootstrap sample with a broad range of potential penalty values ($\lambda$:s) in a logistic LASSO model. We then only kept $\lambda$:s minimizing the mean cross-validated deviances in each sample. Those $\lambda$:s were used to estimate model coefficients for each potential predictor. The magnitude (absolute values) of those estimates were used as a measure of variable importance. Piece-wise linear regression was used to detect a breaking point where a significant drop in variable importance was observed. Potential predictors with variable importance above this breaking point were considered important and kept as model candidates. The whole process was repeated 100 times. Covariates that were selected at least once out of the 100 times were used in a main effects model of multivariable logistic regression without penalty, and without pre-normalization of numeric variables (main model). A reduced model with variables chosen at least 33 out of the 100 times was used as a simpler alternative for comparison. This model, without cancer as a predictor, was also evaluated separately, considering that medical indications for THA surgery may be different for patients with cancer compared to patients without malignancies. Univariable models with the ASA class, Charlson or Elixhauser co-morbidity indices were used for benchmarking, as well as a multivariable model including only age and sex. Each model including age was fitted three times, once with age as a main effect and twice with restricted cubic splines, either by two or three knots. Odds ratios for the final model were estimated with 95 % confidence intervals.[@Ripley2002]
+
+
+## Statistical analysis for model validation
+
+Each model was used to predict the probability of death within 90 days for patients from the SHAR (internal validation). Sensitivity and specificity were estimated to form receiver operating characteristic (ROC) curves and the area under those curves (AUC) were used as a measure of discriminative ability.[@Fawcett2006] Models with a lower 95 % confidence limit above 0.7, were considered good. Those intervals were based on percentiles from 2,000 non-parametric bootstrap samples. We used the bias-corrected Somers' $D_{xy}$ rank correlation based on 100 resamples to adjust for optimism.[@Miller1991] Calibration bands were made to graphically assess model calibration, comparing predicted probabilities and observed proportions.[@Nattino2016] The reduced model was then evaluated externally. An AUC with 95 % confidence interval was calculated for the model as-is. Re-calibration of the model intercept was then performed to account for different mortality rates in Sweden compared to England and Wales. An updated over-all slope was also calculated to account for country-specific treatment differences.[@Steyerberg2004] Calibration for this re-calibrated model was illustrated in the same calibration belt plot as for the internal calibration.
+
+
+## Statistical tools 
+
+We used `r substr(R.version.string, 1, 15)` (R Foundation for Statistical Computing, Vienna, Austria) with significant packages tidyverse, tidymodels, furrr, pROC.
+
+## Ethical approval
+
+Ethical approval for this study was obtained from the Regional Ethical Review Board in Gothenburg (360-13). Informed consent was not mandatory according to the Swedish patient data law from 2009.
+
+
+# Results
+
+## Study participants
+
+`r format(nrow(df), big.mark = ",")` patients (age `r paste(range(df$P_Age), collapse = " - ")`, `r round(mean(df$P_Sex == "Female") * 100)` % females) were included in the derivation cohort from SHAR (Figure \@ref(fig:flowchart) left panel). `r with(df, sprintf("%d (%.2f %%)", sum(death90), mean(death90) * 100))` of those patients died within 90 days and no one was censored before that. The unadjusted risk of 90-day mortality was therefore `r surv90d`. Further characteristics of the study population are presented in Table \@ref(tab:tab1). `r round(mean(df$CCI_index_quan_original != 0) * 100)` % and `r round(mean(df$ECI_index_sum_all  != 0) * 100)` % of the Swedish patients had at least one pre-surgery co-morbidity according to Charlson and Elixhauser. The proportion of patients with ASA class III was `r round(mean(df$P_ASA == 3) * 100)` %.
+
+In addition, `r format(N_njr$tot, big.mark = ",")` patients were included for the external validation cohort from England and Wales (Figure \@ref(fig:flowchart) right panel). Their unadjusted risk of 90 day mortality was `r njr_surv`, which was higher compared to the derivation cohort from Sweden.
+
+
+## Model development and internal validation
+
+```{r}
+spell <- function(x)
+  c("one", "two", "three", "four", "five", "six", 
+    "seven", "eight", "nine", "ten", "eleven", "twelve")[x]
+```
+
+
+There were `r spell(nrow(comb_lgl))` co-morbidities that were not recorded for any patient who died in the Swedish derivation cohort: `r comb_lgl_text`. Those variables were therefore excluded as potential predictors prior to any statistical model derivation. The derived main model included `r coefs_print`. The reduced model, with covariates included at least 33 out of 100 times, was restricted to `r coefs_print_reduced` (Table \@ref(tab:brlprop)).
+
+There were no differences between models including age as a main effect, compared to those were age was modeled by restricted cubic splines with either two or three knots. We therefore focused on the more parsimonious models with age as a main effect. Similarly, the correction for optimism only affected the third decimals of the AUC confidence intervals and was therefore omitted. 
+
+```{r}
+half_paran <- function(x) 
+  gsub(
+    "(\\(AUC = )(0.\\d*)(, )(95 % CI: 0.\\d{2} to 0.\\d{2}\\))", 
+    "\\2 \\(\\4", 
+    get_auc(x), 
+    perl = TRUE
+  )
+```
+
+
+The main and reduced models were no different regarding discriminative power `r sprintf("%s versus %s", gsub(")", "", get_auc("Main model"), fixed = TRUE), gsub("(", "", get_auc("Reduced model"), fixed = TRUE))`. We therefore considered the reduced model as superior due to its simplicity. Traditional models performed poorly with 95 % confidence intervals not above 0.7: The Charlson co-morbitiy index had an AUC of `r half_paran("Charlson")` and the Elixhauser co-morbidity an AUC of `r gsub("\\)", ";", half_paran("Elixhauser"))` Figure \@ref(fig:rocs) left panel and Figure \@ref(fig:aucci)). 
+
+The ability of the reduced model to estimate probabilities of death within 90 days is further illustrated in Figure \@ref(fig:sep). Model calibration was good for estimated probabilities up to 3 % and acceptable up to 5 %, although with predicted probabilities usually higher than observed proportions (Figure \@ref(fig:calibration)). 
+
+Estimated model coefficients and corresponding odds ratios for the reduced model are presented in Table \@ref(tab:brlreduced).
+
+Omitting cancer from the reduced model did not affect the AUC or calibration for estimated probabilities below 3 %, but calibration outside this range deteriorated, and we thus retained cancer as an important predictor.
+
+
+## External validation
+
+
+# Discussion
+
+
+## Conclusion
+
+
+##### PAGE BREAK
+
+# Contribution of authors
+
+
+
+# Acknowledgement
+
+
+##### PAGE BREAK
+
+```{r, child = "figs.Rmd"}
+```
+
+```{r, child = "tabs.Rmd"}
+```
+
+##### PAGE BREAK
+
+# Bibliography
