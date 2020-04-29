@@ -2,9 +2,7 @@ df <-
   df %>%
   mutate(
     P_SurgYear                = P_SurgYear - min(P_SurgYear),
-    outcome_dislocation_90d_f = as.factor(outcome_dislocation_90d),
     outcome_infection_90d_f   = as.factor(outcome_infection_90d),
-    outcome_dislocation_2y_f  = as.factor(outcome_dislocation_2y),
     outcome_infection_2y_f    = as.factor(outcome_infection_2y),
   )
 
@@ -63,7 +61,7 @@ compare_models <- function(brlasso_coefs, outcome) {
     ) %>%
     mutate(
       glm = map(fit, pluck, "glm"),
-      lrm = map(fit, pluck, "lrm")
+      # lrm = map(fit, pluck, "lrm")
     ) %>%
     select(-fit)
 
@@ -85,12 +83,12 @@ compare_models <- function(brlasso_coefs, outcome) {
       roc_auc       = map_dbl(roc_auc, ".estimate"),
       roc_curve     = map(obspred, yardstick::roc_curve, obs, pred, options = list(direction = ">")),
 
-      lrm_validate  = furrr::future_map(lrm, rms::validate, B = 100),
-      lrm_calibrate = furrr::future_map(lrm, calibrate),
-      optimism      = map_dbl(lrm_validate, ~ .["Dxy", "optimism"]),
-      AUC_est.corr  = AUC_est - optimism,
-      AUC_lo.corr   = AUC_lo  - optimism,
-      AUC_hi.corr   = AUC_hi  - optimism,
+      # lrm_validate  = furrr::future_map(lrm, rms::validate, B = 100),
+      # lrm_calibrate = furrr::future_map(lrm, calibrate),
+      # optimism      = map_dbl(lrm_validate, ~ .["Dxy", "optimism"]),
+      # AUC_est.corr  = AUC_est - optimism,
+      # AUC_lo.corr   = AUC_lo  - optimism,
+      # AUC_hi.corr   = AUC_hi  - optimism,
 
       cal_belt = future_map(
         obspred, ~ givitiR::givitiCalibrationBelt(
@@ -106,21 +104,21 @@ compare_models <- function(brlasso_coefs, outcome) {
 
 # Add models --------------------------------------------------------------
 
-model_data <-
-  model_data %>%
+infection_data <-
+  infection_data %>%
   mutate(
     outcome_var_f = paste0(outcome_var, "_f"),
     all_models = map2(coefs_selected, outcome_var_f, compare_models)
   )
 
 # Not able to cache the usual way since object is too large
-saveRDS(model_data, "cache/model_data.rds")
+saveRDS(infection_data, "cache/infection_data.rds")
 
 
 # Save only the GLM models for later use ----------------------------------
 
 fit_brl <-
-  model_data %>%
+  infection_data %>%
   select(outcome, time, all_models) %>%
   unnest("all_models") %>%
   filter(grepl("BRL (reduced )?\\(age as main effect\\)", Model)) %>%

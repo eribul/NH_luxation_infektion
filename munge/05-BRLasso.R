@@ -1,3 +1,12 @@
+# Tidiagre steg utgick från både infektion och luxation kombinerat.
+# JAg väljer nu att fortsätta med enbart infektion och hanteras luxation separat sernare
+
+infection_data <-
+  model_data %>%
+  filter(outcome == "infection")
+
+
+
 # Perform calculations (time consuming)
 
 best_coefs_fun <- function(df_model) {
@@ -10,10 +19,10 @@ best_coefs_fun <- function(df_model) {
 }
 
 
-model_data <-
-  model_data %>%
+infection_data <-
+  infection_data %>%
   mutate(
     best_coefs_tmp = map(df_model, best_coefs_fun)
   )
 
-cache("model_data")
+cache("infection_data")

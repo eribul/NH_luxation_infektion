@@ -28,10 +28,10 @@ brlasso_coefs_selected <- function(best_coefs_tmp) {
   )
 }
 
-model_data <-
-  model_data %>%
+infection_data <-
+  infection_data %>%
   mutate(
     coefs_selected = map(best_coefs_tmp, brlasso_coefs_selected)
   )
 
-cache("model_data")
+cache("infection_data")
