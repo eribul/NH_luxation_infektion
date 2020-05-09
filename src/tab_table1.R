@@ -5,7 +5,8 @@ dft1 <-
   mutate(
     Charlson   = replace(CCI_index_quan_original, CCI_index_quan_original == 4, "4+"),
     Elixhauser = replace(ECI_index_sum_all, ECI_index_sum_all == 3, "3+"),
-    RxRiskV    = Rx_index_pratt
+    RxRiskV    = Rx_index_pratt,
+    P_BMI      = relevel(P_BMI, "under/normal weight")
   ) %>%
   select(
     `Infection within two years` = outcome_infection_2y,
@@ -24,11 +25,10 @@ dft1 <-
     RxRiskV,
     starts_with("c_"),
   ) %>%
-  setNames(clean_names(names(.))) %>%
-  rename(`ASA class` = ASA)
+  setNames(gsub(": ", "", clean_names(names(.))))
 
   fct <- c("Sex", "ASA class", "Elixhauser",
-           "Charlson", "Diagnos", "Cemented stem", "Cemented cup")
+           "Charlson", "Diagnosis", "Cemented stem", "Cemented cup")
 
   t1 <-
   tableone::CreateTableOne(
@@ -51,6 +51,7 @@ t1_all <-
   ) %>%
   as_tibble()
 
+
 table1 <-
   t1 %>%
   print(
@@ -64,7 +65,7 @@ table1 <-
     what = trimws(ifelse(level == "", gsub(" = TRUE", "", what), ""))
   ) %>%
   mutate_at(vars(`TRUE`, `FALSE`), zero) %>%
-  select(what, level, `TRUE`, `FALSE`, Total)
+  select(what, level, `PJI within 2 years` = `TRUE`, `No PJI` = `FALSE`)
 
 
 cache("table1")

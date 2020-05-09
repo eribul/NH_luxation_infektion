@@ -2,7 +2,7 @@ clean_names <- function(x, firstupper = TRUE, lvls = TRUE) {
   gsub("(ECI|[cP])_|_?TRUE.?|_X|TypeOf", "", x) %>%
   {gsub("_",       " ",           .)} %>%
   {gsub("SexMale", "Male sex",    .)} %>%
-  {gsub("DiaGrp",  "Diagnos: ",   .)} %>%
+  {gsub("DiaGrp",  "Diagnosis: ",   .)} %>%
   {gsub("ASA",     "ASA class: ", .)} %>%
   {gsub("BMI",     "BMI: ",       .)} %>%
   {gsub("aids",    "AIDS/HIV",    .)} %>%
