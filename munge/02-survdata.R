@@ -30,6 +30,7 @@ df <-
         "class II-III obesity"),
       right = FALSE
     ),
+    P_BMI = relevel(P_BMI, "overweight"),
 
     # Survival
     stime   =
@@ -39,7 +40,7 @@ df <-
     # truncate comorbidity indices
     charlson_icd10_index_quan_original = pmin(charlson_icd10_index_quan_original, 4),
     elix_icd10_index_sum_all           = pmin(elix_icd10_index_sum_all, 3),
-    rxriskv_index_pratt                = pmin(rxriskv_index_pratt, 10),
+    rxriskv_index_pratt                = pmin(rxriskv_regex_pratt_index_index_pratt, 10),
 
     # fixation
     cemented_stem = P_FemStemCemMix != "Cementfritt",
@@ -59,9 +60,9 @@ df <-
          "Primary osteoarthritis",
          "Secondary osteoarthritis",
          "Childhood disease",
-         "Idiopathic necrosis",
+         "Avascular necrosis of the femoral head (AVN)",
          "Inflammatory joint disease",
-         "Sequelae"
+         "Secondary osteoarthritis"                   # merge of categories
        )
       )
   ) %>%
@@ -87,5 +88,5 @@ df <-
   # Shorter names
   rename_all(~ gsub("charlson_icd10", "CCI", .)) %>%
   rename_all(~ gsub("elix_icd10", "ECI", .)) %>%
-  rename_all(~ gsub("rxriskv(_regex)?", "Rx", .))
+  rename_all(~ gsub("rxriskv(_regex_pratt)?", "Rx", .))
 

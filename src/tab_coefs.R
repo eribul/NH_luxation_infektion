@@ -3,22 +3,16 @@ suppressMessages({library(ProjectTemplate); load.project()})
 # Table to present --------------------------------------------------------
 
 tbl_coefs <-
-  model_data %>%
-  select(outcome, time, all_models) %>%
+  infection_data %>%
   unnest("all_models") %>%
   filter(
-    Model == "BRL (age as main effect)"
+    Model == "Main model"
   ) %>%
-  select(outcome, time, Model, tidy) %>%
+  select(time, tidy) %>%
   unnest(tidy) %>%
   transmute(
-    outcome,
     time = factor(time, c("90d", "2y"), c("90 days", "2 years")),
-    Model,
     term = clean_names(term),
-    term = gsub("_", " ", term),
-    term = gsub("Diagnos", "Diagnos: ", term),
-    math = sprintf("\\text{%s} \\\\ ", term) %>% {gsub("\\text{(intercept)} \\\\ ", "", ., fixed = TRUE)},
     beta = log(estimate),
     `OR 95 % CI` = sprintf("%.2f (%.2f-%.2f)", estimate, conf.low, conf.high),
     p    = pvalue_format(.01)(p.value)
@@ -59,27 +53,5 @@ coefs_print_string <- function(name) {
   )
 }
 
-# coefs_print_reduced <- coefs_print_string("BRL reduced (age as main effect)")
-# coefs_print         <- coefs_print_string("BRL (age as main effect)")
+# coefs_print <- coefs_print_string("BRL (age as main effect)")
 # cache("coefs_print")
-# cache("coefs_print_reduced")
-
-
-# Mathematical formula ----------------------------------------------------
-#
-# coefs_form <-
-#   brlasso_tbl_coefs %>%
-#   transmute(
-#     coefs = ifelse(
-#       math == "",
-#       sprintf("%.2f \\\\ ", beta),
-#       sprintf("%.2f \\cdot %s", beta, math)
-#     )
-#   ) %>%
-#   summarise(coefs = paste(coefs, collapse = " & + ")) %>%
-#   select(coefs) %>%
-#   pluck(1) %>%
-#   substr(1, nchar(.) - 4) %>%
-#   {sprintf("$$\\begin{aligned} \\hat \\beta X = & %s \\end{aligned}.$$", .)}
-#
-# cache("coefs_form")

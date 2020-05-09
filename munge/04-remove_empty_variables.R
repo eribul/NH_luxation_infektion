@@ -104,11 +104,11 @@ rm_unusual_lgls <- function(outcome_var, lgl_vars) {
 
 # Prepare data for modelling
 bake_data <- function(df0) {
-  recipe(outcome ~ ., df0_infection) %>%
+  recipe(outcome ~ ., df0) %>%
   step_normalize(all_numeric()) %>%
   step_dummy(all_predictors()) %>%
-  prep(df0_infection) %>%
-  bake(df0_infection)
+  prep(df0) %>%
+  bake(df0)
 }
 
 model_data <-

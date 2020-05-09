@@ -3,7 +3,7 @@
 
 infection_data <-
   model_data %>%
-  filter(outcome == "infection")
+  dplyr::filter(outcome == "infection")
 
 
 

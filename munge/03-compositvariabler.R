@@ -40,6 +40,7 @@ df <-
     -matches("^([CE]CI)|(Rx)_"),
     matches("index")
   ) %>%
-  bind_cols(c_cols)
+  bind_cols(c_cols) %>%
+  select(-c_obesity)
 
 cache("df")

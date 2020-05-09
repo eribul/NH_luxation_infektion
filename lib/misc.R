@@ -4,4 +4,6 @@ zero <- function(x) {
 }
 
 # Cached manually and not loaded by default
-model_data <- readRDS("cache/model_data.rds")
+model_data <-
+  if (file.exists("cache/model_data.rds"))
+    readRDS("cache/model_data.rds")

@@ -63,9 +63,7 @@ df_kva_orig <-
   sql_shpr_orig %>%
   select(LopNr, P_Side, P_SurgDate) %>%
   left_join(tbl(con, "par_kva_utdatum"), c("LopNr" = "id")) %>%
-  collect()
-
-df_kva_orig <-
+  collect() %>%
   mutate(
     P_SurgDate = as.Date(P_SurgDate)
   )

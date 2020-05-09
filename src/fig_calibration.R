@@ -1,6 +1,5 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
-# SHAR (internal calibration) ---------------------------------------------
 
 get_beltdata <- function(cb) {
   tibble(
@@ -10,24 +9,29 @@ get_beltdata <- function(cb) {
   )
 }
 
-shar_calibration <-
-  model_data %>%
-  select(outcome, time, all_models) %>%
+df_calibration <-
+  infection_data %>%
+  select(time, all_models) %>%
   unnest("all_models") %>%
-  filter(
-    "BRL (age as main effect)"
+  filter(Model == "Main model") %>%
+  mutate(
+    cal_belt = furrr::future_map(
+      obspred, ~ givitiR::givitiCalibrationBelt(
+        as.numeric(.$obs == "TRUE"), .$pred, devel = "internal"),
+      .progress = TRUE),
+    cal_belt.p = map_dbl(cal_belt, "p.value"),
+    cal_belt = map(cal_belt, get_beltdata)
   ) %>%
-  mutate(cal_belt = map(cal_belt, get_beltdata)) %>%
-  select(outcome,time,  Model, cal_belt) %>%
+  select(time, Model, cal_belt) %>%
   unnest(cal_belt) %>%
   mutate(time = factor(time, c("90d", "2y"), c("90 days", "2 years")))
 
 # Make figure -------------------------------------------------------------
-calplot <- function(xlim = c(0, 0.17), ylim = c(0, 0.25)) {
-  ggplot(shar_calibration, aes(x, ymin = L, ymax = U)) +
+calplot <- function(xlim = c(0, 0.1), ylim = c(0, 0.1)) {
+  ggplot(df_calibration, aes(x, ymin = L, ymax = U)) +
   geom_ribbon(alpha = .3) +
   geom_abline(aes(intercept = 0, slope = 1)) +
-  # theme_minimal() +
+  theme_minimal(15) +
   scale_x_continuous(labels = scales::percent_format(1)) +
   scale_y_continuous(labels = scales::percent_format(1)) +
   coord_cartesian(xlim, ylim) +
@@ -38,9 +42,8 @@ calplot <- function(xlim = c(0, 0.17), ylim = c(0, 0.25)) {
     legend.justification = c(1, 0),
     legend.title = element_blank()
   ) +
-  facet_grid(outcome ~ time)
+  facet_wrap(~ time)
 }
 
 
 ggsave("graphs/calibration.png", calplot(), height = 10, width = 20 , units = "cm")
-ggsave("graphs/calibration_zoom.png", calplot(c(0, 0.05), c(0, 0.05)), height = 10, width = 20 , units = "cm")

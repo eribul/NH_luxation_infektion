@@ -10,7 +10,7 @@ brlasso_coefs_selected <- function(best_coefs_tmp) {
   # List of variables selected every time
   best_coefs_reduced <-
     brlasso_tbl_selected %>%
-    filter(n >= round(.75 * config$Bmax)) %>% # Urspr föreslogs intersect (variabler som tas varje gång)
+    filter(n >= round(.5 * config$Bmax)) %>% # Urspr föreslogs intersect (variabler som tas varje gång)
     select(variable) %>%
     pluck(1)
 
