@@ -9,7 +9,8 @@ dft1 <-
     P_BMI      = relevel(P_BMI, "under/normal weight")
   ) %>%
   select(
-    `Infection within two years` = outcome_infection_2y,
+    `PJI within two years` = outcome_infection_2y,
+    `PJI within 90 days` = outcome_infection_90d,
     P_Age,
     P_Sex,
     P_BMI,
@@ -30,42 +31,72 @@ dft1 <-
   fct <- c("Sex", "ASA class", "Elixhauser",
            "Charlson", "Diagnosis", "Cemented stem", "Cemented cup")
 
-  t1 <-
+t1_2y <-
   tableone::CreateTableOne(
-    strata = "Infection within two years",
-    vars = setdiff(names(dft1), "Infection within two years"),
+    strata = "PJI within two years",
+    vars = setdiff(names(dft1), "PJI within two years"),
     factorVars = fct,
-    data = dft1,
+    data = select(dft1, -`PJI within 90 days`),
     test = FALSE
-  )
-
-t1_all <-
-  tableone::CreateTableOne(
-    vars = setdiff(names(dft1), "Infection within two years"),
-    factorVars = fct,
-    data = dft1,
-    test = FALSE
-  ) %>%
-  print(
-    printToggle = FALSE
-  ) %>%
-  as_tibble()
-
-
-table1 <-
-  t1 %>%
-  print(
+  ) %>% print(
     printToggle = FALSE
   ) %>%
   as_tibble(rownames = "what") %>%
-  add_column(Total = t1_all$Overall) %>%
+  rename(
+    `PJI < 2 years` = `TRUE`,
+    `No PJI < 2 years` = `FALSE`
+  )
+
+t1_90d <-
+  tableone::CreateTableOne(
+    strata = "PJI within 90 days",
+    vars = setdiff(names(dft1), "PJI within 90 days"),
+    factorVars = fct,
+    data = select(dft1, -`PJI within two years`),
+    test = FALSE
+  ) %>%
+  print(
+    printToggle = FALSE
+  ) %>%
+  as_tibble() %>%
+  rename(
+    `PJI < 90 days` = `TRUE`,
+    `No PJI < 90 days` = `FALSE`
+  )
+
+t1_tot <-
+  tableone::CreateTableOne(
+    vars = setdiff(names(dft1), c("PJI within two years", "PJI within 90 days")),
+    factorVars = fct,
+    data = dft1,
+    test = FALSE
+  ) %>%
+  print(
+    printToggle = FALSE
+  ) %>%
+  as_tibble() %>%
+  rename(Total = Overall)
+
+
+table1 <-
+  bind_cols(
+    t1_2y,
+    t1_90d,
+    t1_tot
+  ) %>%
   mutate(
     level = trimws(ifelse(startsWith(what, " "), what, "")),
     level = paste0(toupper(substr(level, 1, 1)), substring(level, 2)),
     what = trimws(ifelse(level == "", gsub(" = TRUE", "", what), ""))
   ) %>%
-  mutate_at(vars(`TRUE`, `FALSE`), zero) %>%
-  select(what, level, `PJI within 2 years` = `TRUE`, `No PJI` = `FALSE`, Total)
+  mutate_at(vars(-what, -level), zero) %>%
+  select(
+    what,
+    level,
+    `PJI < 90 days`, `No PJI < 90 days`,
+    `PJI < 2 years`, `No PJI < 2 years`,
+    Total
+  )
 
 
 cache("table1")
