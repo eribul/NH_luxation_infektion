@@ -128,3 +128,11 @@ model_data <-
   )
 
 cache("model_data")
+
+
+# Save list of excluded co-morbidities for presentation
+excl_factors <-
+  infection_data$lgl_text[[1]] %>%
+  {gsub("pancreatii", "pancreatic i", .)}
+
+cache("excl_factors")
