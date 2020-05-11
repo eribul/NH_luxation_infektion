@@ -30,7 +30,6 @@ df <-
         "class II-III obesity"),
       right = FALSE
     ),
-    P_BMI = relevel(P_BMI, "overweight"),
 
     # Survival
     stime   =

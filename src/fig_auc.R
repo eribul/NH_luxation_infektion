@@ -13,8 +13,13 @@ data_auc_ci <-
   select(time, Model, starts_with("AUC")) %>%
   mutate(
     Model = reorder(Model, AUC_est),
-    time = factor(time, c("90d", "2y"), c("90 days", "2 years"))
+    time  = factor(time, c("90d", "2y"), c("90 days", "2 years")),
+    ci    = sprintf("95 %% CI: %.2f to %.2f", AUC_lo, AUC_hi),
+    text1  = sprintf("(AUC = %.2f, %s)", AUC_est, ci),
+    text2 = sprintf("AUC = %.2f (%s)", AUC_est, ci),
   )
+
+cache("data_auc_ci")
 
 annotates <-
   data_auc_ci %>%

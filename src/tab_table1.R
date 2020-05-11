@@ -65,7 +65,7 @@ table1 <-
     what = trimws(ifelse(level == "", gsub(" = TRUE", "", what), ""))
   ) %>%
   mutate_at(vars(`TRUE`, `FALSE`), zero) %>%
-  select(what, level, `PJI within 2 years` = `TRUE`, `No PJI` = `FALSE`)
+  select(what, level, `PJI within 2 years` = `TRUE`, `No PJI` = `FALSE`, Total)
 
 
 cache("table1")

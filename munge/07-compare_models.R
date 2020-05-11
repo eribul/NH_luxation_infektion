@@ -3,18 +3,15 @@ df <-
   mutate(
     P_SurgYear                = P_SurgYear - min(P_SurgYear),
     outcome_infection_90d_f   = as.factor(outcome_infection_90d),
-    outcome_infection_2y_f    = as.factor(outcome_infection_2y),
-    P_PMI = factor(P_BMI, c("under/normal weight", "overweight",
-                                "class I obesity", "class II-III obesity"
-    ))
+    outcome_infection_2y_f    = as.factor(outcome_infection_2y)
   )
 
 # "unregularized least-square fit restricted to variables in J" /[@Bach2008]
 form <- function(nms) {
   paste("outcome ~", paste(unique(gsub(paste0(
     "_TRUE.|_X[23]|_(I|II|III|Man|Kvinna|Male|Female|married|single|widow.widower|",
-    "under.normal.weight|class.II.III.obesity|class.I.obesity|",
-    "Idiopathic.necrosis|overweight|Inflammatory.joint.disease|Secondary.osteoarthritis)"), "",
+    "under.normal.weight|overweight|class.I.obesity|class.II.III.obesity|",
+    "Idiopathic.necrosis|Inflammatory.joint.disease|Secondary.osteoarthritis)"), "",
     nms)), collapse = " + ")
   )
 }

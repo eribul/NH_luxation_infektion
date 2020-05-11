@@ -7,7 +7,7 @@ obspred <-
   select(outcome, time, Model, obspred, AUC_lo) %>%
   unnest(obspred) %>%
   filter(
-    Model == "Main model"
+    Model == "Reduced model"
   ) %>%
   mutate(time = factor(time, c("90d", "2y"), c("90 days", "2 years")))
 

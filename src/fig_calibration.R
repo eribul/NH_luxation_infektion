@@ -13,7 +13,7 @@ df_calibration <-
   infection_data %>%
   select(time, all_models) %>%
   unnest("all_models") %>%
-  filter(Model == "Main model") %>%
+  filter(Model == "Reduced model") %>%
   mutate(
     cal_belt = furrr::future_map(
       obspred, ~ givitiR::givitiCalibrationBelt(
