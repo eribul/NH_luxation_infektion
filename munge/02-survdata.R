@@ -58,7 +58,7 @@ df <-
       c(
          "Primary osteoarthritis",
          "Secondary osteoarthritis",
-         "Childhood disease",
+         "Sequelae after childhood hip disease",
          "Avascular necrosis of the femoral head (AVN)",
          "Inflammatory joint disease",
          "Secondary osteoarthritis"                   # merge of categories

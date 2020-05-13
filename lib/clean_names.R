@@ -6,7 +6,6 @@ clean_names <- function(x, firstupper = TRUE, lvls = TRUE) {
   {gsub("ASA",     "ASA class: ", .)} %>%
   {gsub("BMI",     "BMI: ",       .)} %>%
   {gsub("aids",    "AIDS/HIV",    .)} %>%
-  {gsub("cns",     "CNS disease", .)} %>%
   {paste0(toupper(substr(., 1, 1)), substring(., 2))}
 }
 
