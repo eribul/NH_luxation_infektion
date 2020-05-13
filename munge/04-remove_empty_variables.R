@@ -58,7 +58,7 @@ comb_lgl <-
 
 comb_fct_tmp <-
   df0 %>%
-  select(is.factor)
+  select(where(is.factor))
 
 n_lvls <-
   comb_fct_tmp %>%
