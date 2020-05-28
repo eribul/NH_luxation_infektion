@@ -1,12 +1,3 @@
-# Tidiagre steg utgick från både infektion och luxation kombinerat.
-# JAg väljer nu att fortsätta med enbart infektion och hanteras luxation separat sernare
-
-infection_data <-
-  model_data %>%
-  dplyr::filter(outcome == "infection")
-
-
-
 # Perform calculations (time consuming)
 
 best_coefs_fun <- function(df_model) {

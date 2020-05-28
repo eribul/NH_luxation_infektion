@@ -21,7 +21,7 @@ ae_npr <- function(df_npr, regex, endday) {
     select(LopNr, P_SurgDate) %>%
     mutate(LopNr = as.character(LopNr)) %>%
     categorize(
-      df_kva,
+      df_npr,
       cc = "hip_ae_hailer",
       id = "LopNr",
       codify_args = list(
@@ -30,7 +30,8 @@ ae_npr <- function(df_npr, regex, endday) {
       ),
       cc_args = list(
         regex = regex,
-        tech_names = TRUE
+        tech_names = TRUE,
+        stop = TRUE
       )
     )
 }
@@ -45,15 +46,15 @@ outcome_reop <- function(endday) {
   df_reops %>%
     mutate_at(vars(P_SurgDate, R_SurgDate), as.Date) %>%
     filter(R_SurgDate - P_SurgDate < endday) %>%
-    distinct(LopNr, P_Side, .keep_all = TRUE) %>%
-    transmute(
-      LopNr, P_SurgDate,
+    # Räcker med outcome vid en av ev flera reop under perioden.
+    group_by(LopNr, P_SurgDate) %>%
+    summarise(
       reop_luxation =
-        IND_ReSurgReason1 == "Luxation, instabilitet, subluxation" |
-        IND_ReSurgReason2 == "Luxation, instabilitet, subluxation",
+        any(IND_ReSurgReason1 == "Luxation, instabilitet, subluxation") |
+        any(IND_ReSurgReason2 == "Luxation, instabilitet, subluxation"),
       roep_infektion =
-        IND_ReSurgReason1 == "Infektion" |
-        IND_ReSurgReason2 == "Infektion"
+        any(IND_ReSurgReason1 == "Infektion") |
+        any(IND_ReSurgReason2 == "Infektion")
     )
 }
 
@@ -68,7 +69,12 @@ df_outcome <- function(outcome_icd10, outcome_kva, outcome_reop) {
   as_tibble(outcome_icd10) %>%
     left_join(as_tibble(outcome_kva), by = c("LopNr", "P_SurgDate")) %>%
     left_join(outcome_reop,           by = c("LopNr", "P_SurgDate")) %>%
-    transmute(
+    mutate(across(
+      c(roep_infektion, reop_luxation, starts_with("hip_ae_hailer_regex")),
+      coalesce, FALSE
+      )
+    ) %>%
+    mutate(
       LopNr = as.numeric(LopNr),
       P_SurgDate,
       outcome_infection =

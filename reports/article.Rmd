@@ -315,7 +315,7 @@ icd10_codes <-
   summary(
       hip_ae_hailer, 
       "icd10se", 
-      cc_args = list(regex = "icd10")
+      cc_args = list(regex = "icd10", stop = TRUE)
     )$codes_vct$Infection %>% 
     paste(collapse = ", ")
 
@@ -323,7 +323,7 @@ nomesco_codes <-
   summary(
       hip_ae_hailer, 
       "kva", 
-      cc_args = list(regex = "kva")
+      cc_args = list(regex = "kva", stop = TRUE)
     )$codes_vct$Infection %>% 
     paste(collapse = ", ")
 

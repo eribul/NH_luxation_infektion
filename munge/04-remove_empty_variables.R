@@ -130,6 +130,15 @@ model_data <-
 cache("model_data")
 
 
+
+# Tidiagre steg utgick från både infektion och luxation kombinerat.
+# JAg väljer nu att fortsätta med enbart infektion och hanteras luxation separat sernare
+
+infection_data <-
+  model_data %>%
+  dplyr::filter(outcome == "infection")
+
+
 # Save list of excluded co-morbidities for presentation
 excl_factors <-
   infection_data$lgl_text[[1]] %>%
