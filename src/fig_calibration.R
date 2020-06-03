@@ -46,4 +46,4 @@ calplot <- function(xlim = c(0, 0.1), ylim = c(0, 0.1)) {
 }
 
 
-ggsave("graphs/calibration.png", calplot(), height = 10, width = 20 , units = "cm")
+ggsave("graphs/calibration.png", calplot(), height = 12, width = 20 , units = "cm")

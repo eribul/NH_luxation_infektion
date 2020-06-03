@@ -9,7 +9,10 @@ obspred <-
   filter(
     Model == "Reduced model"
   ) %>%
-  mutate(time = factor(time, c("90d", "2y"), c("90 days", "2 years")))
+  mutate(
+    time = factor(time, c("90d", "2y"), c("90 days", "2 years")),
+    # pred = factor(pred, c(TRUE, FALSE), c("PJI", "no PJI"))
+  )
 
 
 # Histogram ---------------------------------------------------------------
@@ -20,7 +23,7 @@ fig_separation_hist <-
   geom_histogram(
     aes(fill = obs),
     alpha = .5, position = "identity",
-    bins = 15
+    bins = 10
   ) +
   theme_minimal(15) +
   theme(
@@ -32,7 +35,7 @@ fig_separation_hist <-
   xlab("") +
   ylab(expression(paste(sqrt(n)))) +
   scale_x_log10(
-    limits = c(.0025, .1),
+    limits = c(.01, .1),
     labels = scales::percent
   ) +
   scale_y_sqrt(
@@ -68,11 +71,14 @@ fig_separation_density <-
   ) +
   ylab("Density") +
   scale_x_log10(
-    limits = c(.0025, .1),
+    name = "Predicted probability",
+    limits = c(.01, .1),
     labels = scales::percent
   ) +
   expand_limits(x = 0) +
-  facet_wrap(~ time, scales = "free_y")
+  facet_wrap(~ time, scales = "free_y") +
+  scale_fill_discrete(labels = c("no PJI", "PJI")) +
+  scale_color_discrete(labels = c("no PJI", "PJI"))
 
 
 # Combine plots -----------------------------------------------------------

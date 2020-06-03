@@ -63,6 +63,8 @@ compare_models <- function(brlasso_coefs, outcome) {
 
 # Add models --------------------------------------------------------------
 
+future::plan("multiprocess", workers = 2)
+
 infection_data <-
   infection_data %>%
   mutate(

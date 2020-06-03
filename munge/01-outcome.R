@@ -74,7 +74,7 @@ df_outcome <- function(outcome_icd10, outcome_kva, outcome_reop) {
       coalesce, FALSE
       )
     ) %>%
-    mutate(
+    transmute(
       LopNr = as.numeric(LopNr),
       P_SurgDate,
       outcome_infection =

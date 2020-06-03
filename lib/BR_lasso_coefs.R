@@ -4,19 +4,24 @@
 #' variable importance to make any sense!
 #' @param df data.frame
 #' @return tibble with important variables and a measure thereof
-BR_lasso_coefs <- function(df) {
+I <- 0
+BR_lasso_coefs <- function(df, lambda) {
+  I <<- I + 1
+  i <<- 0
+  cat(paste0("\n", I, ": "))
+
   df %>%
     rsample::bootstraps(config$N_bots) %>%
     mutate(
       data  = map(splits, as_tibble),
-      lasso = map(data, lasso)
+      lasso = map(data, lasso, lambda)
     ) %>%
     unnest(lasso) %>%
     group_by(variable) %>%
     summarise(
-      impor = abs(mean(coef))
+      impor = abs(mean(coef)),
+      .groups = "drop"
     ) %>%
-    ungroup() %>%
     filter(impor > 0) %>%
     arrange(desc(impor)) %>%
     add_rowindex()
