@@ -30,3 +30,49 @@ infection_data <-
   )
 
 cache("infection_data")
+
+
+
+
+
+
+
+
+
+
+# Find the second change point for piecewise linear regression with three segments
+# instead of
+cp2 <- function(df) {
+  df$row <- df$.row
+  model  <- list(impor ~ 1 + row, ~ 0 + row, ~ 0 + row)
+  fit    <- suppressMessages(mcp(model, df))
+  f      <- suppressWarnings(fixef(fit))
+  f[f$name == "cp_2", "mean"]
+}
+
+future::plan(multiprocess, workers = 7)
+
+# Replace old break points with new --------------------------------------------
+infection_data$best_coefs_tmp[[1]]$breaks <-
+  infection_data$best_coefs_tmp[[1]]$coefs_all %>%
+  furrr::future_map_dbl(cp2, .progress = TRUE)
+
+infection_data$best_coefs_tmp[[2]]$breaks <-
+  infection_data$best_coefs_tmp[[2]]$coefs_all %>%
+  furrr::future_map_dbl(cp2, .progress = TRUE)
+
+
+# Include variables based on new break points
+infection_data$best_coefs_tmp[[1]]$coefs <-
+  with(
+    infection_data$best_coefs_tmp[[1]],
+    map2(coefs_all, breaks, ~slice(.x, seq_len(.y)))
+  )
+
+infection_data$best_coefs_tmp[[2]]$coefs <-
+  with(
+    infection_data$best_coefs_tmp[[2]],
+    map2(coefs_all, breaks, ~slice(.x, seq_len(.y)))
+  )
+
+cache("infection_data")

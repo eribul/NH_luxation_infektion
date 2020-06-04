@@ -6,7 +6,8 @@ baseline <-
   crossing(
     time = factor(c("90 days", "2 years")),
     term = c(
-      #paste("Sex:", levels(df$P_Sex)[1]),
+      paste("Sex:", levels(df$P_Sex)[1]),
+      paste("ASA class:", levels(df$P_ASA)[1]),
       paste("BMI:", levels(df$P_BMI)[1]),
       paste("Diagnosis:", levels(df$P_DiaGrp)[1])
     )
@@ -72,6 +73,7 @@ coefs_text <-
       variable == "bmi" ~ "body mass index",
       variable == "diagnosis" ~ "the underlaying diagnosis for THA",
       variable == "sex" ~ "gender",
+      variable == "asa class" ~ "ASA class",
       variable == "cns disease" ~ "CNS disease",
       TRUE ~ variable
     )

@@ -11,7 +11,8 @@ form <- function(nms) {
   paste("outcome ~", paste(unique(gsub(paste0(
     "_TRUE.|_X[23]|_(I|II|III|Man|Kvinna|Male|Female|married|single|widow.widower|",
     "under.normal.weight|overweight|class.I.obesity|class.II.III.obesity|",
-    "Avascular.necrosis.of.the.femoral.head..AVN.|Inflammatory.joint.disease|Secondary.osteoarthritis)"), "",
+    "Avascular.necrosis.of.the.femoral.head..AVN.|Inflammatory.joint.disease|",
+    "Secondary.osteoarthritis|Sequelae.after.childhood.hip.disease)"), "",
     nms)), collapse = " + ")
   )
 }
