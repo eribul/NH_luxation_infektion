@@ -44,6 +44,12 @@ Vectorize(load, "file")(cache_files[filesizes < 10], .GlobalEnv)
 **Correspondance:** erik.bulow@vgregion.se; +46 70 08 234 28; Svenska Hoftprotesregistret, Registercentrum Vastra Gotaland, SE-413 45, Sweden
 
 
+# Note!
+
+MOst text in the article is automatically generated! Bold text is not!
+It is thus possible that this text does not correspond to the rest!
+It must be updated manually!
+
 
 ##### PAGE BREAK
 

@@ -4,6 +4,10 @@
 .Ruserdata
 datauttag_adverse_events
 adverse_events
-cache
 .docx
 /doc/*
+diagnostics/external_validation_template_files/*
+diagnostics/external_validation_template_cache/*
+
+cache/*
+!cache/ext_val_required_data.RData
