@@ -115,8 +115,8 @@ new data from Denmark. So, how should this data look like?
 ## Inclusion/exlusion
 
 Those were the inclusions/exclusions from Sweden. Similar criteria
-should apply also for the external validation data set in to get
-comparable cohorts.
+should apply also for the external validation data set to get comparable
+cohorts.
 
 Ignore filtering of missing educational level, hospital type and
 fixation, however, since those variables are not needed in the model to
@@ -145,7 +145,6 @@ The data to evaluate (in addition to the respective `outcome` variable)
 should look like this:
 
 ``` r
-# Object I use on my end, which includes patient data and can therefore not be shared
 head(ext_val_required_data) 
 ```
 
@@ -214,7 +213,7 @@ ext_val_required_data %>%
     (<https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi>)
     where overweight = “pre-obesity”  
   - `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped
-    into broader categories as found in a separate CSV-file:
+    into broader categories.
 
 <!-- end list -->
 
@@ -316,9 +315,9 @@ comorbs
     ## [5] "c_drug_alcohol_abuse"       "c_rheumatic_disease"       
     ## [7] "c_cancer"
 
-are logical/boolean indicators of comorbidities based on ICD-10/ATC
+… are logical/boolean indicators of comorbidities based on ICD-10/ATC
 codes from one year prior to THA, as recorded in our National Patient
-Register and medical prescription register. INdividual codes were
+Register and medical prescription register. Individual codes were
 grouped according to Charlson and Elixhauser as codified by table 2 in
 Quan et al. (2005), and as RxRisk V according to table 1 in Pratt et al.
 (2018). Those conditions were then further combined according to table 1
@@ -419,10 +418,6 @@ plot(ROC)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
-A calibration belt plot might be illustrated as (this example might look
-strange due to the intentional internal/external miss-specification
-above):
 
 ``` r
 plot(calibration, xlim = c(0, 0.3), ylim = c(0, 0.3))
