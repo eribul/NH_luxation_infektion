@@ -11,7 +11,7 @@ load_libraries: TRUE
 libraries: bookdown, broom, coder, DataExplorer, data.table, DiagrammeR, DiagrammeRsvg,
           future, furrr, ggpubr, gridExtra, givitiR, glmnet, glue, knitr, pROC, rlang,
           rmarkdown, rms, rsconnect, rsvg, scales, SiZer, splines, survminer, tableone,
-          tidyverse, tidymodels, zoo, biglasso, mcp
+          tidyverse, tidymodels, zoo, biglasso, mcp, magrittr
 as_factors: TRUE
 attach_internal_libraries: FALSE
 cache_loaded_data: TRUE

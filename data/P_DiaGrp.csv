@@ -1,0 +1,73 @@
+﻿Diagnos PrimärOp;Diagnosgrupp
+M16.9 - Koxartros, ospecificerad;Primär artros
+M16.1 - Koxartros, primär;Primär artros
+M16.0 - Koxartros, primär dubbelsidig;Primär artros
+M15.0 - Polyartros;Primär artros
+M24.6F - Ankylotisk led;Inflammatorisk ledsjukdom
+M33.1 - Annan dermatomysit;Inflammatorisk ledsjukdom
+M00.9F - Artrit UNS;Inflammatorisk ledsjukdom
+M13.8 - Artrit, annan specificerad;Inflammatorisk ledsjukdom
+M45.9 - Bechterew, morbus;Inflammatorisk ledsjukdom
+M65.9F - Ospecifik synovit;Inflammatorisk ledsjukdom
+M07.3F - Psoriasisartrit;Inflammatorisk ledsjukdom
+M02.9F - Reaktiv artrit UNS;Inflammatorisk ledsjukdom
+M08.0F - Reumatoid artrit juvenil;Inflammatorisk ledsjukdom
+M05.8F - Reumatoid artrit seropos;Inflammatorisk ledsjukdom
+M06.9F - Reumatoid artrit UNS;Inflammatorisk ledsjukdom
+M05.9F - Seropositiv reumatoid artrit, ospec;Inflammatorisk ledsjukdom
+M32.9 - Systemisk lupus etrythematosus, ospec;Inflammatorisk ledsjukdom
+S72.00 - Collumfraktur;Akut trauma, höftfraktur
+S72.10 - Pertrokantär fraktur;Akut trauma, höftfraktur
+S72.20 - Subtrokantär fraktur;Akut trauma, höftfraktur
+M91.8 - Annan spec juvenil osteokondros i höft och bäcken;Följdtillstånd efter barnsjukdom i höftleden
+M91.2 - Coxa plana (sen diagnos);Följdtillstånd efter barnsjukdom i höftleden
+M21.0F - Coxa valga;Följdtillstånd efter barnsjukdom i höftleden
+M21.1F - Coxa vara;Följdtillstånd efter barnsjukdom i höftleden
+M93.0 - Förskjuten övre femurepifys (icke traumatisk);Följdtillstånd efter barnsjukdom i höftleden
+M16.3 - Koxartros, annan dysplastisk;Följdtillstånd efter barnsjukdom i höftleden
+M16.2 - Koxartros, orsakad av dysplasi, dubbelsidig;Följdtillstånd efter barnsjukdom i höftleden
+M91.1 - Perthes sjukdom;Följdtillstånd efter barnsjukdom i höftleden
+M87.3F - Annan sekundär osteonekros;Idiopatisk nekros
+M87.0F - Osteonekros;Idiopatisk nekros
+M87.1F - Osteonekros orsakad av läkemedel;Idiopatisk nekros
+T93.1 - Collumfraktur, sena besvär efter;Komplikation eller följdtillstånd efter fraktur el annat trauma
+M84.0F - Felläkning av fraktur;Komplikation eller följdtillstånd efter fraktur el annat trauma
+M84.2F - Fördröjd frakturläkning i höftled/lårben;Komplikation eller följdtillstånd efter fraktur el annat trauma
+T84.6F - Infektion efter osteosyntes;Komplikation eller följdtillstånd efter fraktur el annat trauma
+T84.3F - Mek kompl av andra instrument, implantat;Komplikation eller följdtillstånd efter fraktur el annat trauma
+T84.1 - Mek kompl instr för inre fix av extremitetsben;Komplikation eller följdtillstånd efter fraktur el annat trauma
+M87.2F - Ostenekros efter tidigare skada;Komplikation eller följdtillstånd efter fraktur el annat trauma
+T91.2 - Sena besvär av annan frakt på br-korgen o bäckenet;Komplikation eller följdtillstånd efter fraktur el annat trauma
+M84.1F - Utebliven läkning/pseudartros;Komplikation eller följdtillstånd efter fraktur el annat trauma
+M90.7F - Benfraktur vid tumörsjukdom;Tumör
+D16.2 - Benign tumör i nedre extremiteterna;Tumör
+C41.4 - Malign tumör i bäckenben, sakrum och coccyx;Tumör
+C40.2 - Malign tumör i nedre extremiteternas långa ben;Tumör
+C90.0 - Myelomatos;Tumör
+M84.4F - Patologisk fraktur UNS;Tumör
+C79.5 - Sek malign tumör (metastas) i ben och benmärg;Tumör
+D21.2 - Synovial chondromatos;Tumör
+D48.0 - Tumör av osäker el. okänd natur i ben och ledbrosk;Tumör
+M16.5 - Koxartros, annan posttraumatisk;Annan sekundär artros
+M16.7 - Koxartros, annan sekundär;Annan sekundär artros
+M16.6 - Koxartros, annan sekundär dubbelsidig;Annan sekundär artros
+M16.4 - Koxartros, posttraumatisk dubbelsidig;Annan sekundär artros
+S32.40 - Fraktur på acetabulum;Akut trauma, övriga
+S72.30 - Fraktur på femurskaftet;Akut trauma, övriga
+S73.0 - Luxation i höft;Akut trauma, övriga
+M84.3F - Stressfraktur;Akut trauma, övriga
+M80.0F - Åldersosteoporos m fraktur;Akut trauma, övriga
+M94.8 - Andra spec sjukdomar i brosk;Övrigt
+M00.8 - Artrit och polyartrit ors av annan spec bakterie;Övrigt
+M36.2 - Artropati vid hemofili;Övrigt
+M25.5F - Ledvärk;Övrigt
+M93.2F - Osteochondrosis dissecans;Övrigt
+M89.5 - Osteolys;Övrigt
+M86.6F - Osteomyelit, annan specificerad kronisk;Övrigt
+M88.8 - Pagets sjukdom i andra specificerade ben;Övrigt
+M96.0F - Pseudartros efter artrodes;Övrigt
+M24.4F - Recidiverande lux och sublux i led;Övrigt
+M89.9 - Sjukdom i benvävnad, ospecificerad;Övrigt
+M79.6F - Smärta ospecifik;Övrigt
+M90.0F - TBC i benvävnad;Övrigt
+M12.2F - Villonodulär synovit;Övrigt
