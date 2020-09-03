@@ -75,6 +75,8 @@ coefs_text <-
       variable == "sex" ~ "gender",
       variable == "asa class" ~ "ASA class",
       variable == "cns disease" ~ "CNS disease",
+      variable == "pancreatiinsufficiency" ~ "pancreatic insufficiency",
+      variable == "rheumatidisease" ~ "rheumatic disease",
       TRUE ~ variable
     )
   ) %>%
