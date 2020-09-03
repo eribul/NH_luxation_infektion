@@ -97,7 +97,7 @@ ext_val_required_data %>%
 ```
 - `P_Sex` and `P_ASA` should be self-explanatory
 - `P_BMI` is a broader categorization based on BMI and the [WHO classification] (https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi) where overweight = "pre-obesity"  
-- `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped into broader categories as found in a separate CSV-file:
+- `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped into broader categories.
 
 ```{r}
 readr::read_csv2("../data/P_DiaGrp.csv", trim_ws = TRUE)
@@ -114,7 +114,7 @@ nms     <- names(ext_val_required_data)
 comorbs <- nms[startsWith(nms, "c_")]
 comorbs
 ```
-are logical/boolean indicators of comorbidities based on ICD-10/ATC codes from one year prior to THA, as recorded in our National Patient Register and medical prescription register. INdividual codes were grouped according to Charlson and Elixhauser as codified by table 2 in @Quan2005, and as RxRisk V according to table 1 in @Pratt2018. Those conditions were then further combined according to table 1 in the drafted manuscript:
+... are logical/boolean indicators of comorbidities based on ICD-10/ATC codes from one year prior to THA, as recorded in our National Patient Register and medical prescription register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in @Quan2005, and as RxRisk V according to table 1 in @Pratt2018. Those conditions were then further combined according to table 1 in the drafted manuscript:
 
 ```{r}
 comorbs_nms <- 
@@ -190,7 +190,6 @@ AUCci
 plot(ROC)
 ```
 
-A calibration belt plot might be illustrated as (this example might look strange due to the intentional internal/external miss-specification above):
 
 ```{r}
 plot(calibration, xlim = c(0, 0.3), ylim = c(0, 0.3))
