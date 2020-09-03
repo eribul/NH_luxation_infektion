@@ -3,11 +3,13 @@ title: "External validation"
 author: "Erik Bulow"
 date: '`r Sys.Date()`'
 output: 
-  html_document:
-    toc: true
-    toc_float: true
-    df_print: paged
+  html_document: 
+    toc: yes
+    toc_float: yes
     code_folding: show
+    keep_md: yes
+  md_document:
+    variant: markdown_github
 bibliography: 
   C:\\Users\\erik_\\Documents\\library.bib
 ---
@@ -22,7 +24,7 @@ load("../cache/df.RData")
 
 # Start
 
-Install and attatch some useful packages
+Install and attach some useful packages
 
 ```{r}
 # First, set random seed for reproducability:
@@ -39,7 +41,7 @@ if (length(pkgsinst)) install.packages(pkgsinst)
 purrr::walk(pkgs, ~suppressPackageStartupMessages(library(., character.only = TRUE)))
 ```
 
-Load the exported models to validate (the R object previously sent, probably with another path). This is a nested data frame with one row for each prediction period (90 days and 2 years). Column `fit` contains `glm` object stripped from any personal patient data.
+Load the exported models to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)). This is a nested data frame with one row for each prediction period (90 days and 2 years). Column `fit` contains `glm` objects stripped from any personal patient data.
 
 ```{r}
 # Load the exported model object
@@ -92,7 +94,7 @@ names(ext_val_required_data)
 Some of those are factor variables:
 ```{r}
 ext_val_required_data %>% 
-  select(is.factor) %>% 
+  select(where(is.factor)) %>% 
   pivot_longer(everything(), values_ptypes = list(value = character())) %>% 
   distinct() %>% 
   arrange(name, value) %>% 
