@@ -6,7 +6,6 @@ datauttag_adverse_events
 adverse_events
 .docx
 /doc/*
-diagnostics/README_files/*
 diagnostics/README_cache/*
 
 cache/*

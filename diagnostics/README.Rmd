@@ -3,13 +3,9 @@ title: "External validation"
 author: "Erik Bulow"
 date: '`r Sys.Date()`'
 output: 
-  html_document: 
+  github_document:
     toc: yes
-    toc_float: yes
-    code_folding: show
-    keep_md: yes
-  md_document:
-    variant: markdown_github
+    df_print: "kable"
 bibliography: 
   C:\\Users\\erik_\\Documents\\library.bib
 ---
@@ -46,7 +42,6 @@ Load the exported models to validate (also found "manually" at [Github](https://
 ```{r}
 # Load the exported model object
 load("../cache/fit_brl_reduced_lean.RData")
-fit_brl_reduced_lean
 ```
 
 Let's inspect the model for 90 days just to get a sence of it:
@@ -62,7 +57,7 @@ We should now use this model with the `predict` function combined with new data 
 
 ## Inclusion/exlusion
 
-Those were the inclusions/exclusions from Sweden. Similar criteria should apply also for the external validation data set in to get comparable cohorts. 
+Those were the inclusions/exclusions from Sweden. Similar criteria should apply also for the external validation data set to get comparable cohorts. 
 
 Ignore filtering of missing educational level, hospital type and fixation, however, since those variables are not needed in the model to validate. 
 
@@ -82,7 +77,6 @@ The outcome variables are simply called `outcome` in each model (hence, adjusted
 The data to evaluate (in addition to the respective `outcome` variable) should look like this:
 
 ```{r}
-# Object I use on my end, which includes patient data and can therefore not be shared
 head(ext_val_required_data) 
 ```
 
