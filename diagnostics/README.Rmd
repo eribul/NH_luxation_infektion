@@ -71,6 +71,16 @@ knitr::include_graphics("../graphs/flowchart.png")
 
 The outcome variables are simply called `outcome` in each model (hence, adjusted for each model). Those are logical/boolean (or 0/1-numeric) indicating whether the patient got PJI within 90 days (2 years) after THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded all patients who died within two years. A competing risk model for survival analysis might be better but we were pragmatic in this case. 
 
+We identified PJI within 90 days/2 years as either the primary or secondary reson for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospitl visit/admission during this period.
+
+We used regular expression to identify such codes:
+
+```{r}
+coder::hip_ae_hailer %>% 
+  filter(group == "Infection")
+```
+
+
 
 ## Predictors
 
