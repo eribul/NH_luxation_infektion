@@ -139,6 +139,26 @@ THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded
 all patients who died within two years. A competing risk model for
 survival analysis might be better but we were pragmatic in this case.
 
+We identified PJI within 90 days/2 years as either the primary or
+secondary reson for reoperation performed within this time frame, as
+recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded
+during a hospitl visit/admission during this period.
+
+We used regular expression to identify such codes:
+
+``` r
+coder::hip_ae_hailer %>% 
+  filter(group == "Infection")
+```
+
+<div class="kable-table">
+
+| group     | regex\_icd10                                                   | regex\_kva      |
+| :-------- | :------------------------------------------------------------- | :-------------- |
+| Infection | (M(00(1|\[0289\]F?)|86(\[01\]F|6F?)))|T(8(14|4(5\[FX\]?|7F?))) | NFS\[0-9\]{0,2} |
+
+</div>
+
 ## Predictors
 
 The data to evaluate (in addition to the respective `outcome` variable)
@@ -411,19 +431,19 @@ For this example we had AUC:
 AUCci
 ```
 
-    ## 95% CI: 0.652-0.6744 (100 non-stratified bootstrap replicates)
+    ## 95% CI: 0.6529-0.6765 (100 non-stratified bootstrap replicates)
 
 ``` r
 plot(ROC)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 plot(calibration, xlim = c(0, 0.3), ylim = c(0, 0.3))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
     ## $m
     ## [1] 2
@@ -467,19 +487,19 @@ calibration2 <-
 AUCci2
 ```
 
-    ## 95% CI: 0.6552-0.6758 (100 non-stratified bootstrap replicates)
+    ## 95% CI: 0.6529-0.6751 (100 non-stratified bootstrap replicates)
 
 ``` r
 plot(ROC2)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 plot(calibration2, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-2.png)<!-- -->
 
     ## $m
     ## [1] 2
@@ -519,19 +539,19 @@ calibration3 <-
 AUCci3
 ```
 
-    ## 95% CI: 0.6518-0.6739 (100 non-stratified bootstrap replicates)
+    ## 95% CI: 0.654-0.6746 (100 non-stratified bootstrap replicates)
 
 ``` r
 plot(ROC3)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 plot(calibration3, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-2.png)<!-- -->
 
     ## $m
     ## [1] 2
