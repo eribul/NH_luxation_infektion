@@ -10,3 +10,4 @@ diagnostics/README_cache/*
 
 cache/*
 !cache/ext_val_required_data.RData
+reports/~$rticle.docx
