@@ -50,13 +50,18 @@ compare_models <- function(brlasso_coefs, outcome) {
     pred          = map(fit, predict, type = "response"),
     obspred       = map(pred, ~ tibble(pred = ., obs = df[[outcome]])),
     ROC           = map(obspred, pROC::roc, "obs", "pred", levels = c(control = "FALSE", case = "TRUE"), direction = "<"),
-    AUCci         = furrr::future_map(ROC, pROC::ci.auc, method = "bootstrap", boot.stratified = FALSE, .progress = TRUE),
+    AUCci         = furrr::future_map(
+                      ROC,
+                      pROC::ci.auc,
+                      method = "bootstrap",
+                      boot.stratified = FALSE,
+                      .progress = TRUE,
+                      .options = future_options(seed = TRUE)
+                    ),
     AUC_lo        = map_dbl(AUCci, 1),
     AUC_est       = map_dbl(AUCci, 2),
     AUC_hi        = map_dbl(AUCci, 3),
-    roc_auc       = map(obspred, yardstick::roc_auc, obs, pred,   options = list(direction = ">")),
-    roc_auc       = map_dbl(roc_auc, ".estimate"),
-    roc_curve     = map(obspred, yardstick::roc_curve, obs, pred, options = list(direction = ">"))
+    roc_curve     = map(obspred, yardstick::roc_curve, obs, pred, event_level = "second")
   ) %>%
   select(-pred, -ROC, -AUCci)
 }
