@@ -1,31 +1,37 @@
 
 # Outcome from NPR --------------------------------------------------------
+load("cache/df_kva_orig.RData")
+load("cache/df_icd10_orig.RData")
 
 df_kva <-
   df_kva_orig %>%
   mutate(
-    id = as.character(LopNr),
-    code_date = as.Date(code_date, origin = "1970-01-01")
+    LopNr = as.character(LopNr),
+    hospital = as.Date(code_date, origin = "1970-01-01")
     ) %>%
-  select(id, code, code_date) %>%
-  as.codedata()
+  select(LopNr, code, hospital) %>%
+  as.data.table(key = c("LopNr", "code", "hospital"))
 
 df_icd10 <-
   df_icd10_orig %>%
-  mutate(code_date = as.Date(code_date, origin = "1970-01-01")) %>%
-  select(id = LopNr, code, code_date) %>%
-  as.codedata()
+  mutate(hospital = as.Date(code_date, origin = "1970-01-01")) %>%
+  select(LopNr, code, hospital) %>%
+  as.data.table(key = c("LopNr", "code", "hospital"))
+
+df_shpr <- as.data.table(df_shpr, key = c("LopNr", "P_Side", "P_SurgDate"))
 
 ae_npr <- function(df_npr, regex, endday) {
   df_shpr %>%
     select(LopNr, P_SurgDate) %>%
     mutate(LopNr = as.character(LopNr)) %>%
     categorize(
-      df_npr,
+      codedata = df_npr,
       cc = "hip_ae_hailer",
       id = "LopNr",
+      code = "code",
       codify_args = list(
         date = "P_SurgDate",
+        code_date = "hospital",
         days = c(0, endday)
       ),
       cc_args = list(

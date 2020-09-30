@@ -1,4 +1,5 @@
 # Pre-filter: some pat ids have same hip primarly operated twice!
+load("cache/df_shpr_orig.RData")
 dubbles <-
   df_shpr_orig %>%
   select(LopNr, P_Side, P_SurgDate) %>%
@@ -44,14 +45,14 @@ filters <-
       expr = list(quo(op_last == 1))
     ),
 
-    tibble(
-      step = 2,
-      excl = "Died within 2 years of THA",
-      incl = "Last operated hip",
-      expr = list(quo(
-        is.na(DateOfDeath) | as.numeric(DateOfDeath - P_SurgDate) > 2 * 365.241
-        ))
-    ),
+    # tibble(
+    #   step = 2,
+    #   excl = "Died within 2 years of THA",
+    #   incl = "Last operated hip",
+    #   expr = list(quo(
+    #     is.na(DateOfDeath) | as.numeric(DateOfDeath - P_SurgDate) > 2 * 365.241
+    #     ))
+    # ),
 
     tibble(
       step = 3,

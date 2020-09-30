@@ -1,7 +1,7 @@
 External validation
 ================
 Erik Bulow
-2020-09-03
+2020-09-30
 
   - [Start](#start)
   - [Prepare data](#prepare-data)
@@ -67,45 +67,45 @@ fit_brl_reduced_lean$fit[[1]]
     ## 
     ## Coefficients:
     ##                                          (Intercept)  
-    ##                                             -4.49475  
-    ##                                      P_BMIoverweight  
-    ##                                              0.33308  
-    ##                                 P_BMIclass I obesity  
-    ##                                              0.67627  
-    ##                            P_BMIclass II-III obesity  
-    ##                                              1.09194  
-    ##                     P_DiaGrpSecondary osteoarthritis  
-    ##                                              0.51642  
-    ##         P_DiaGrpSequelae after childhood hip disease  
-    ##                                              0.07772  
-    ## P_DiaGrpAvascular necrosis of the femoral head (AVN)  
-    ##                                              0.41987  
-    ##                   P_DiaGrpInflammatory joint disease  
-    ##                                              0.66259  
+    ##                                             -4.46139  
     ##                                      c_psoriasisTRUE  
-    ##                                              0.50518  
-    ##                                    c_cns_diseaseTRUE  
-    ##                                              0.37214  
-    ##                                              P_ASAII  
-    ##                                              0.28240  
-    ##                                             P_ASAIII  
-    ##                                              0.65987  
+    ##                                              0.56759  
+    ##                                      P_BMIoverweight  
+    ##                                              0.30079  
+    ##                                 P_BMIclass I obesity  
+    ##                                              0.63225  
+    ##                            P_BMIclass II-III obesity  
+    ##                                              1.03859  
+    ##                     P_DiaGrpSecondary osteoarthritis  
+    ##                                              0.52263  
+    ##         P_DiaGrpSequelae after childhood hip disease  
+    ##                                              0.06035  
+    ## P_DiaGrpAvascular necrosis of the femoral head (AVN)  
+    ##                                              0.45133  
+    ##                   P_DiaGrpInflammatory joint disease  
+    ##                                              0.60515  
     ##                                            P_SexMale  
-    ##                                              0.39640  
-    ##                       c_pancreatic_insufficiencyTRUE  
-    ##                                              0.47267  
-    ##                                  c_liver_diseaseTRUE  
-    ##                                              0.42204  
-    ##                             c_drug_alcohol_abuseTRUE  
-    ##                                              0.24986  
-    ##                              c_rheumatic_diseaseTRUE  
-    ##                                              0.33729  
+    ##                                              0.38003  
+    ##                                              P_ASAII  
+    ##                                              0.31615  
+    ##                                             P_ASAIII  
+    ##                                              0.70456  
+    ##                                    c_cns_diseaseTRUE  
+    ##                                              0.37569  
     ##                                         c_cancerTRUE  
-    ##                                              0.32745  
+    ##                                              0.37046  
+    ##                       c_pancreatic_insufficiencyTRUE  
+    ##                                              0.41773  
+    ##                             c_drug_alcohol_abuseTRUE  
+    ##                                              0.22074  
+    ##                                  c_liver_diseaseTRUE  
+    ##                                              0.39651  
+    ##                              c_rheumatic_diseaseTRUE  
+    ##                                              0.33051  
     ## 
-    ## Degrees of Freedom: 86414 Total (i.e. Null);  86397 Residual
-    ## Null Deviance:       24840 
-    ## Residual Deviance: 23920     AIC: 23960
+    ## Degrees of Freedom: 88829 Total (i.e. Null);  88812 Residual
+    ## Null Deviance:       26290 
+    ## Residual Deviance: 25300     AIC: 25340
 
 We should now use this model with the `predict` function combined with
 new data from Denmark. So, how should this data look like?
@@ -139,6 +139,26 @@ THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded
 all patients who died within two years. A competing risk model for
 survival analysis might be better but we were pragmatic in this case.
 
+We identified PJI within 90 days/2 years as either the primary or
+secondary reson for reoperation performed within this time frame, as
+recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded
+during a hospitl visit/admission during this period.
+
+We used regular expression to identify such codes:
+
+``` r
+coder::hip_ae_hailer %>% 
+  filter(group == "Infection")
+```
+
+<div class="kable-table">
+
+| group     | regex\_icd10                                                   | regex\_kva      |
+| :-------- | :------------------------------------------------------------- | :-------------- |
+| Infection | (M(00(1|\[0289\]F?)|86(\[01\]F|6F?)))|T(8(14|4(5\[FX\]?|7F?))) | NFS\[0-9\]{0,2} |
+
+</div>
+
 ## Predictors
 
 The data to evaluate (in addition to the respective `outcome` variable)
@@ -150,14 +170,14 @@ head(ext_val_required_data)
 
 <div class="kable-table">
 
-| P\_BMI              | P\_DiaGrp                | c\_psoriasis | c\_cns\_disease | P\_ASA | P\_Sex | c\_pancreatic\_insufficiency | c\_liver\_disease | c\_drug\_alcohol\_abuse | c\_rheumatic\_disease | c\_cancer |
-| :------------------ | :----------------------- | :----------- | :-------------- | :----- | :----- | :--------------------------- | :---------------- | :---------------------- | :-------------------- | :-------- |
-| under/normal weight | Primary osteoarthritis   | FALSE        | FALSE           | II     | Female | FALSE                        | FALSE             | FALSE                   | FALSE                 | TRUE      |
-| under/normal weight | Primary osteoarthritis   | FALSE        | FALSE           | II     | Male   | FALSE                        | FALSE             | FALSE                   | FALSE                 | FALSE     |
-| overweight          | Primary osteoarthritis   | FALSE        | FALSE           | II     | Male   | FALSE                        | FALSE             | FALSE                   | FALSE                 | FALSE     |
-| class I obesity     | Primary osteoarthritis   | FALSE        | FALSE           | I      | Male   | FALSE                        | FALSE             | FALSE                   | FALSE                 | FALSE     |
-| overweight          | Secondary osteoarthritis | FALSE        | FALSE           | I      | Male   | FALSE                        | FALSE             | FALSE                   | FALSE                 | FALSE     |
-| class I obesity     | Primary osteoarthritis   | FALSE        | TRUE            | I      | Male   | FALSE                        | FALSE             | FALSE                   | FALSE                 | FALSE     |
+| c\_psoriasis | P\_BMI              | P\_DiaGrp              | P\_Sex | P\_ASA | c\_cns\_disease | c\_cancer | c\_pancreatic\_insufficiency | c\_drug\_alcohol\_abuse | c\_liver\_disease | c\_rheumatic\_disease | c\_fluid\_electrolyte\_disorders | c\_osteoporosis\_pagets |
+| :----------- | :------------------ | :--------------------- | :----- | :----- | :-------------- | :-------- | :--------------------------- | :---------------------- | :---------------- | :-------------------- | :------------------------------- | :---------------------- |
+| FALSE        | overweight          | Primary osteoarthritis | Female | III    | TRUE            | FALSE     | FALSE                        | FALSE                   | FALSE             | FALSE                 | FALSE                            | FALSE                   |
+| FALSE        | under/normal weight | Primary osteoarthritis | Male   | II     | FALSE           | FALSE     | FALSE                        | FALSE                   | FALSE             | FALSE                 | FALSE                            | FALSE                   |
+| FALSE        | under/normal weight | Primary osteoarthritis | Female | II     | FALSE           | FALSE     | FALSE                        | FALSE                   | FALSE             | TRUE                  | FALSE                            | FALSE                   |
+| FALSE        | overweight          | Primary osteoarthritis | Male   | III    | TRUE            | FALSE     | FALSE                        | FALSE                   | FALSE             | FALSE                 | FALSE                            | FALSE                   |
+| FALSE        | overweight          | Primary osteoarthritis | Male   | II     | TRUE            | FALSE     | FALSE                        | FALSE                   | FALSE             | FALSE                 | FALSE                            | FALSE                   |
+| FALSE        | class I obesity     | Primary osteoarthritis | Female | II     | FALSE           | FALSE     | FALSE                        | FALSE                   | FALSE             | FALSE                 | FALSE                            | FALSE                   |
 
 </div>
 
@@ -167,12 +187,13 @@ thus with columns:
 names(ext_val_required_data)
 ```
 
-    ##  [1] "P_BMI"                      "P_DiaGrp"                  
-    ##  [3] "c_psoriasis"                "c_cns_disease"             
-    ##  [5] "P_ASA"                      "P_Sex"                     
-    ##  [7] "c_pancreatic_insufficiency" "c_liver_disease"           
-    ##  [9] "c_drug_alcohol_abuse"       "c_rheumatic_disease"       
-    ## [11] "c_cancer"
+    ##  [1] "c_psoriasis"                   "P_BMI"                        
+    ##  [3] "P_DiaGrp"                      "P_Sex"                        
+    ##  [5] "P_ASA"                         "c_cns_disease"                
+    ##  [7] "c_cancer"                      "c_pancreatic_insufficiency"   
+    ##  [9] "c_drug_alcohol_abuse"          "c_liver_disease"              
+    ## [11] "c_rheumatic_disease"           "c_fluid_electrolyte_disorders"
+    ## [13] "c_osteoporosis_pagets"
 
 Some of those are factor variables:
 
@@ -310,10 +331,11 @@ comorbs <- nms[startsWith(nms, "c_")]
 comorbs
 ```
 
-    ## [1] "c_psoriasis"                "c_cns_disease"             
-    ## [3] "c_pancreatic_insufficiency" "c_liver_disease"           
-    ## [5] "c_drug_alcohol_abuse"       "c_rheumatic_disease"       
-    ## [7] "c_cancer"
+    ## [1] "c_psoriasis"                   "c_cns_disease"                
+    ## [3] "c_cancer"                      "c_pancreatic_insufficiency"   
+    ## [5] "c_drug_alcohol_abuse"          "c_liver_disease"              
+    ## [7] "c_rheumatic_disease"           "c_fluid_electrolyte_disorders"
+    ## [9] "c_osteoporosis_pagets"
 
 … are logical/boolean indicators of comorbidities based on ICD-10/ATC
 codes from one year prior to THA, as recorded in our National Patient
@@ -338,15 +360,17 @@ tab_categorization %>%
 
 <div class="kable-table">
 
-| Comorbidities by groups  | Charlson                                             | Elixhauser                                                     | Rx                                                                                                          |
-| :----------------------- | :--------------------------------------------------- | :------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
-| Cancer                   | Malignancy, Metastatic solid tumor                   | Lymphoma, Metastatic cancer, Solid tumor                       | Malignancies                                                                                                |
-| CNS disease              | Dementia, Hemiplegia or paraplegia                   | Depression, Paralysis, Other neurological disorders, Psychoses | Dementia, Depression, Anxiety, Bipolar disorder, Epilepsy, Migraine, Parkinson s disease, Psychotic illness |
-| Drug alcohol abuse       | NA                                                   | Alcohol abuse, Drug abuse                                      | Alcohol dependence                                                                                          |
-| Liver disease            | Mild liver disease, Moderate or severe liver disease | Liver disease                                                  | Liver failure, Hepatitis c                                                                                  |
-| Pancreatic insufficiency | NA                                                   | NA                                                             | Pancreatic insufficiency                                                                                    |
-| Psoriasis                | NA                                                   | NA                                                             | Psoriasis                                                                                                   |
-| Rheumatic disease        | Rheumatic disease                                    | Rheumatoid arthritis                                           | NA                                                                                                          |
+| Comorbidities by groups     | Charlson                                             | Elixhauser                                                     | Rx                                                                                                          |
+| :-------------------------- | :--------------------------------------------------- | :------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
+| Cancer                      | Malignancy, Metastatic solid tumor                   | Lymphoma, Metastatic cancer, Solid tumor                       | Malignancies                                                                                                |
+| CNS disease                 | Dementia, Hemiplegia or paraplegia                   | Depression, Paralysis, Other neurological disorders, Psychoses | Dementia, Depression, Anxiety, Bipolar disorder, Epilepsy, Migraine, Parkinson s disease, Psychotic illness |
+| Drug alcohol abuse          | NA                                                   | Alcohol abuse, Drug abuse                                      | Alcohol dependence                                                                                          |
+| Fluid electrolyte disorders | NA                                                   | Fluid electrolyte disorders                                    | NA                                                                                                          |
+| Liver disease               | Mild liver disease, Moderate or severe liver disease | Liver disease                                                  | Liver failure, Hepatitis c                                                                                  |
+| Osteoporosis pagets         | NA                                                   | NA                                                             | Osteoporosis paget s                                                                                        |
+| Pancreatic insufficiency    | NA                                                   | NA                                                             | Pancreatic insufficiency                                                                                    |
+| Psoriasis                   | NA                                                   | NA                                                             | Psoriasis                                                                                                   |
+| Rheumatic disease           | Rheumatic disease                                    | Rheumatoid arthritis                                           | NA                                                                                                          |
 
 </div>
 
@@ -411,19 +435,19 @@ For this example we had AUC:
 AUCci
 ```
 
-    ## 95% CI: 0.652-0.6744 (100 non-stratified bootstrap replicates)
+    ## 95% CI: 0.6537-0.6733 (100 non-stratified bootstrap replicates)
 
 ``` r
 plot(ROC)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 plot(calibration, xlim = c(0, 0.3), ylim = c(0, 0.3))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
     ## $m
     ## [1] 2
@@ -467,19 +491,19 @@ calibration2 <-
 AUCci2
 ```
 
-    ## 95% CI: 0.6552-0.6758 (100 non-stratified bootstrap replicates)
+    ## 95% CI: 0.6505-0.6744 (100 non-stratified bootstrap replicates)
 
 ``` r
 plot(ROC2)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 plot(calibration2, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-2.png)<!-- -->
 
     ## $m
     ## [1] 2
@@ -519,25 +543,25 @@ calibration3 <-
 AUCci3
 ```
 
-    ## 95% CI: 0.6518-0.6739 (100 non-stratified bootstrap replicates)
+    ## 95% CI: 0.6539-0.6742 (100 non-stratified bootstrap replicates)
 
 ``` r
 plot(ROC3)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 plot(calibration3, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-2.png)<!-- -->
 
     ## $m
     ## [1] 2
     ## 
     ## $p.value
-    ## [1] 0.3549266
+    ## [1] 0.1119161
 
 # Export data to Sweden
 
