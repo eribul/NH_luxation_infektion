@@ -10,4 +10,5 @@ diagnostics/README_cache/*
 
 cache/*
 !cache/ext_val_required_data.RData
+!cache/fit_brl_reduced_lean.RData
 reports/~$rticle.docx
