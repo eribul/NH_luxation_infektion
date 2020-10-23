@@ -18,12 +18,14 @@ df_icd10 <-
   select(LopNr, code, hospital) %>%
   as.data.table(key = c("LopNr", "code", "hospital"))
 
-df_shpr <- as.data.table(df_shpr, key = c("LopNr", "P_Side", "P_SurgDate"))
+df_shpr <-
+  df_shpr %>%
+  mutate(LopNr = as.character(LopNr)) %>%
+  as.data.table(key = c("LopNr", "P_Side", "P_SurgDate"))
 
 ae_npr <- function(df_npr, regex, endday) {
   df_shpr %>%
     select(LopNr, P_SurgDate) %>%
-    mutate(LopNr = as.character(LopNr)) %>%
     categorize(
       codedata = df_npr,
       cc = "hip_ae_hailer",
@@ -42,10 +44,10 @@ ae_npr <- function(df_npr, regex, endday) {
     )
 }
 
-outcome_kva_90d <- ae_npr(df_kva,   "regex_kva",   90)
-outcome_icd_90d <- ae_npr(df_icd10, "regex_icd10", 90)
-outcome_kva_2y  <- ae_npr(df_kva,   "regex_kva",   2 * 365)
-outcome_icd_2y  <- ae_npr(df_icd10, "regex_icd10", 2 * 365)
+outcome_kva_90d <- ae_npr(df_kva,   "kva",   90)
+outcome_icd_90d <- ae_npr(df_icd10, "icd10", 90)
+outcome_kva_2y  <- ae_npr(df_kva,   "kva",   2 * 365)
+outcome_icd_2y  <- ae_npr(df_icd10, "icd10", 2 * 365)
 
 # Outcome from SHAR -------------------------------------------------------
 outcome_reop <- function(endday) {
@@ -76,21 +78,21 @@ df_outcome <- function(outcome_icd10, outcome_kva, outcome_reop) {
     left_join(as_tibble(outcome_kva), by = c("LopNr", "P_SurgDate")) %>%
     left_join(outcome_reop,           by = c("LopNr", "P_SurgDate")) %>%
     mutate(across(
-      c(roep_infektion, reop_luxation, starts_with("hip_ae_hailer_regex")),
+      c(roep_infektion, reop_luxation, starts_with("hip_ae_hailer")),
       coalesce, FALSE
       )
     ) %>%
     transmute(
-      LopNr = as.numeric(LopNr),
+      LopNr,
       P_SurgDate,
       outcome_infection =
         roep_infektion |
-        hip_ae_hailer_regex_icd10_infection |
-        hip_ae_hailer_regex_kva_infection,
+        hip_ae_hailer_icd10_infection |
+        hip_ae_hailer_kva_infection,
       outcome_dislocation =
         reop_luxation |
-        hip_ae_hailer_regex_icd10_dislocation |
-        hip_ae_hailer_regex_kva_dislocation
+        hip_ae_hailer_icd10_dislocation |
+        hip_ae_hailer_kva_dislocation
     ) %>%
     mutate_at(vars(starts_with("outcome_")), coalesce, FALSE)
 }
@@ -100,7 +102,8 @@ df_outcome_2y  <- df_outcome(outcome_icd_2y, outcome_kva_2y, outcome_reop_2y)
 
 df_shpr <-
   df_shpr %>%
-  left_join(df_outcome_90d, c("LopNr", "P_SurgDate")) %>%
-  left_join(df_outcome_2y, c("LopNr", "P_SurgDate"), suffix = c("_90d", "_2y"))
+  as_tibble() %>%
+  left_join(df_outcome_90d, by = c("LopNr", "P_SurgDate")) %>%
+  left_join(df_outcome_2y, by = c("LopNr", "P_SurgDate"), suffix = c("_90d", "_2y"))
 
 cache("df_shpr")

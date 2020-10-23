@@ -9,6 +9,9 @@ adverse_events
 diagnostics/README_cache/*
 
 cache/*
+cache_backup/*
 !cache/ext_val_required_data.RData
 !cache/fit_brl_reduced_lean.RData
+!cache/categorization.*
 reports/~$rticle.docx
+cache_backup/categorization.hash

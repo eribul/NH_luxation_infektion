@@ -11,7 +11,7 @@ bibliography:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 load("../cache/ext_val_required_data.RData")
 load("../cache/tab_categorization.RData")
@@ -52,14 +52,13 @@ fit_brl_reduced_lean$fit[[1]]
 
 We should now use this model with the `predict` function combined with new data from Denmark. So, how should this data look like?
 
-
 # Prepare data
 
 ## Inclusion/exlusion
 
-Those were the inclusions/exclusions from Sweden. Similar criteria should apply also for the external validation data set to get comparable cohorts. 
+Those were the inclusions/exclusions from Sweden. Similar criteria should apply also for the external validation data set to get comparable cohorts.
 
-Ignore filtering of missing educational level, hospital type and fixation, however, since those variables are not needed in the model to validate. 
+Ignore filtering of missing educational level, hospital type and fixation, however, since those variables are not needed in the model to validate.
 
 ```{r}
 knitr::include_graphics("../graphs/flowchart.png")
@@ -69,7 +68,7 @@ knitr::include_graphics("../graphs/flowchart.png")
 
 ## Outcome
 
-The outcome variables are simply called `outcome` in each model (hence, adjusted for each model). Those are logical/boolean (or 0/1-numeric) indicating whether the patient got PJI within 90 days (2 years) after THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded all patients who died within two years. A competing risk model for survival analysis might be better but we were pragmatic in this case. 
+The outcome variables are simply called `outcome` in each model (hence, adjusted for each model). Those are logical/boolean (or 0/1-numeric) indicating whether the patient got PJI within 90 days (2 years) after THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded all patients who died within two years. A competing risk model for survival analysis might be better but we were pragmatic in this case.
 
 We identified PJI within 90 days/2 years as either the primary or secondary reson for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospitl visit/admission during this period.
 
@@ -80,8 +79,6 @@ coder::hip_ae_hailer %>%
   filter(group == "Infection")
 ```
 
-
-
 ## Predictors
 
 The data to evaluate (in addition to the respective `outcome` variable) should look like this:
@@ -90,12 +87,14 @@ The data to evaluate (in addition to the respective `outcome` variable) should l
 head(ext_val_required_data) 
 ```
 
-thus with columns: 
+thus with columns:
 
 ```{r}
 names(ext_val_required_data)
 ```
+
 Some of those are factor variables:
+
 ```{r}
 ext_val_required_data %>% 
   select(where(is.factor)) %>% 
@@ -105,15 +104,14 @@ ext_val_required_data %>%
   group_by(name) %>% 
   mutate(name = replace(name, duplicated(name), ""))
 ```
-- `P_Sex` and `P_ASA` should be self-explanatory
-- `P_BMI` is a broader categorization based on BMI and the [WHO classification] (https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi) where overweight = "pre-obesity"  
-- `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped into broader categories.
+
+-   `P_Sex` and `P_ASA` should be self-explanatory
+-   `P_BMI` is a broader categorization based on BMI and the [WHO classification] (<https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi>) where overweight = "pre-obesity"  
+-   `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped into broader categories.
 
 ```{r}
 readr::read_csv2("../data/P_DiaGrp.csv", trim_ws = TRUE)
 ```
-
-
 
 ## Comorbidities
 
@@ -124,7 +122,8 @@ nms     <- names(ext_val_required_data)
 comorbs <- nms[startsWith(nms, "c_")]
 comorbs
 ```
-... are logical/boolean indicators of comorbidities based on ICD-10/ATC codes from one year prior to THA, as recorded in our National Patient Register and medical prescription register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in @Quan2005, and as RxRisk V according to table 1 in @Pratt2018. Those conditions were then further combined according to table 1 in the drafted manuscript:
+
+... are logical/boolean indicators of comorbidities based on ICD-10/ATC codes from one year prior to THA, as recorded in our National Patient Register and medical prescription register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in \@Quan2005, and as RxRisk V according to table 1 in \@Pratt2018. Those conditions were then further combined according to table 1 in the drafted manuscript:
 
 ```{r}
 comorbs_nms <- 
@@ -139,21 +138,20 @@ tab_categorization %>%
   )
 ```
 
-
 ## Example validation for model of 90 days
 
 We have the 90 day model from the shared R object;
+
 ```{r}
 model <- fit_brl_reduced_lean$fit[[1]]
 ```
 
-Let's assume we now have the `outcome` variable and a data frame `X` with the  predictors (I will use the Swedish data just as an example but this should of course be changed for the external validation).
+Let's assume we now have the `outcome` variable and a data frame `X` with the predictors (I will use the Swedish data just as an example but this should of course be changed for the external validation).
+
 ```{r}
 outcome <- df$outcome_infection_90d
 X       <- ext_val_required_data
 ```
-
-
 
 # Validation of model as is
 
@@ -200,14 +198,13 @@ AUCci
 plot(ROC)
 ```
 
-
 ```{r}
 plot(calibration, xlim = c(0, 0.3), ylim = c(0, 0.3))
 ```
 
 # Re-calibrated intercept
 
-Method 2 from table 1 in @Steyerberg2004.
+Method 2 from table 1 in \@Steyerbeg2004.
 
 ```{r}
 Z <- predict(model, X, type = "response")
@@ -243,10 +240,9 @@ plot(ROC2)
 plot(calibration2, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ```
 
-
 # Re-calibration of intercenpt and calibration slope
 
-Method 3 from table 1 in @Steyerberg2004.
+Method 3 from table 1 in \@Steyerberg2004.
 
 ```{r}
 fit3         <- glm(outcome ~ 1 + Z)
@@ -270,8 +266,6 @@ calibration3 <-
   )
 ```
 
-
-
 ## Results
 
 ```{r}
@@ -280,10 +274,9 @@ plot(ROC3)
 plot(calibration3, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ```
 
-
 # Export data to Sweden
 
-## ROC 
+## ROC
 
 If it would be OK to export coordinates for ROC-plots I would recommend this code to extract only the minimal data needed:
 
@@ -314,6 +307,7 @@ roc_plot_coords <-
 ## AUC with CI
 
 The text output from `AUCci`, `AUCci2` and `AUCci3` should be enough. Hence, the same character string that gets printed above (but now stored in an object).
+
 ```{r}
 AUCci_print  <- capture.output(AUCci)
 AUCci2_print <- capture.output(AUCci2)
@@ -337,10 +331,8 @@ save(
 )
 ```
 
-
 # 2 years
 
 Repeat for the 2-year model.
-
 
 # Bibliography

@@ -12,6 +12,7 @@ df <- rename(df, CCI_malignancy = CCI_malingnancy)
 categorization <-
   categorization.Blad1 %>%
   mutate_all(zoo::na.locf) %>%
+  filter(from != "Rx") %>%                        # NOTE!!!!!!!!!!!! TO TRY WITHOUT
   mutate_at(vars(new, old), ~ gsub("/| ", "_", tolower(.))) %>%
   mutate(
     new = paste0("c_", new),
