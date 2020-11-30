@@ -10,6 +10,10 @@ tab_categorization <-
     `Comorbidities by groups` = new,
     Charlson = CCI,
     Elixhauser = ECI
-  )
+  ) %>%
+
+  # To test without Rx Risk V
+  select(-Rx) %>%
+  filter(!(is.na(Charlson) & is.na(Elixhauser)))
 
 cache("tab_categorization")
