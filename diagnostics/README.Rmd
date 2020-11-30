@@ -3,9 +3,16 @@ title: "External validation"
 author: "Erik Bulow"
 date: '`r Sys.Date()`'
 output: 
-  github_document:
+#  github_document:
+#    toc: yes
+#    df_print: "kable"
+  html_document:
     toc: yes
     df_print: "kable"
+    toc_float: yes
+    number_sections: yes
+    code_folding: "hide"
+    keep_md: yes
 bibliography: 
   C:\\Users\\erik_\\Documents\\library.bib
 ---
