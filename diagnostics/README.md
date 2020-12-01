@@ -1,7 +1,7 @@
 External validation
 ================
 Erik Bulow
-2020-09-30
+2020-10-14
 
   - [Start](#start)
   - [Prepare data](#prepare-data)

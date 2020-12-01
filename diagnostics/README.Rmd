@@ -7,7 +7,8 @@ output:
     toc: yes
     df_print: "kable"
 bibliography: 
-  C:\\Users\\erik_\\Documents\\library.bib
+  # C:\\Users\\erik_\\Documents\\library.bib
+  H:\\zotero_lib.bib
 ---
 
 ```{r setup, include=FALSE}
