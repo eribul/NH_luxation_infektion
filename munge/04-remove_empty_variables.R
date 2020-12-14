@@ -42,7 +42,8 @@ comb_lgl_text <- function(comb_lgl) {
 
 comb_lgl <-
   tibble(
-    outcome = c("dislocation", "infection"),
+    # outcome = c("dislocation", "infection"),
+    outcome = "infection",
     time    = c("90d", "2y")
   ) %>%
   expand(outcome, time) %>%
@@ -142,6 +143,8 @@ infection_data <-
 # Save list of excluded co-morbidities for presentation
 excl_factors <-
   infection_data$lgl_text[[1]] %>%
-  {gsub("pancreatii", "pancreatic i", .)}
+  {gsub("pancreatii", "pancreatic i", .)} %>%
+  {gsub("AIDS/HIV hiv", "AIDS/HIV", .)}
 
 cache("excl_factors")
+
