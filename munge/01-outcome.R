@@ -65,6 +65,7 @@ outcome_reop <- function(endday) {
 }
 
 outcome_reop_90d <- outcome_reop(90)
+cache("outcome_reop_90d")
 outcome_reop_2y  <- outcome_reop(2 * 356.241)
 
 
