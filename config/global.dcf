@@ -1,20 +1,50 @@
-version: 0.9.2
-data_loading: FALSE
+version:             0.10.0
+data_loading:        FALSE
 data_loading_header: TRUE
 data_ignore:
-cache_loading: TRUE
-recursive_loading: TRUE
-munging: FALSE
-logging: FALSE
-logging_level: INFO
-load_libraries: TRUE
-libraries: bookdown, broom, coder, DataExplorer, data.table, DiagrammeR, DiagrammeRsvg,
-          future, furrr, ggpubr, gridExtra, givitiR, glmnet, glue, knitr, pROC, rlang,
-          rmarkdown, rms, rsconnect, rsvg, scales, SiZer, splines, survminer, tableone,
-          tidyverse, tidymodels, zoo, biglasso, mcp, magrittr
-as_factors: TRUE
+cache_loading:       TRUE
+recursive_loading:   TRUE
+munging:             FALSE
+logging:             FALSE
+logging_level:       INFO
+load_libraries:      TRUE
+libraries:
+  bookdown,
+  broom,
+  coder,
+  DataExplorer,
+  data.table,
+  DiagrammeR,
+  DiagrammeRsvg,
+  future,
+  furrr,
+  ggpubr,
+  gridExtra,
+  givitiR,
+  glmnet,
+  glue,
+  knitr,
+  pROC,
+  rlang,
+  rmarkdown,
+  rms,
+  rsconnect,
+  rsvg,
+  scales,
+  SiZer,
+  splines,
+  survminer,
+  tableone,
+  tidyverse,
+  tidymodels,
+  zoo,
+  biglasso,
+  mcp,
+  magrittr
+as_factors:                TRUE
 attach_internal_libraries: FALSE
-cache_loaded_data: TRUE
-sticky_variables: NONE
-tables_type: tibble
-underscore_variables: FALSE
+cache_loaded_data:         TRUE
+sticky_variables:          NONE
+tables_type:               tibble
+underscore_variables:      FALSE
+cache_file_format:         RData
