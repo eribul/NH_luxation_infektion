@@ -1,5 +1,6 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/infection_data.RData")
 
 # SHAR --------------------------------------------------------------------
 

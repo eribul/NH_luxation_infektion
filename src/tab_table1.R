@@ -1,5 +1,7 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/df.RData")
+
 dft1 <-
   df %>%
   mutate(

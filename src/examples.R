@@ -3,6 +3,8 @@ suppressMessages({library(ProjectTemplate); load.project()})
 # Find coefs for 90-day model
 # writeLines(paste(names(coef(fit_brl$fit[[1]])), collapse = " = c(, ),\n"))
 
+load("cache/fit_brl.RData")
+
 examples <-
   tibble(
     c_psoriasis      = c(FALSE,                     TRUE),
@@ -18,7 +20,8 @@ examples <-
     c_rheumatic_disease           = c(FALSE, FALSE),
     c_cancer                      = c(FALSE, FALSE),
     c_peptic_ulcer                = c(FALSE, FALSE),
-    c_fluid_electrolyte_disorders = c(FALSE, FALSE)
+    c_fluid_electrolyte_disorders = c(FALSE, FALSE),
+    c_lung_airways_disease        = c(FALSE, FALSE)
   )
 
 p <- predict(fit_brl$fit[[1]], newdata = examples, type = "response")

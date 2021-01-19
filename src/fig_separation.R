@@ -1,5 +1,7 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/infection_data.RData")
+
 obspred <-
   infection_data %>%
   select(outcome, time, all_models) %>%

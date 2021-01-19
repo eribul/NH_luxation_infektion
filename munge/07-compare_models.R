@@ -12,7 +12,8 @@ form <- function(nms) {
     "_TRUE.|_X[23]|_(I|II|III|Man|Kvinna|Male|Female|married|single|widow.widower|",
     "under.normal.weight|overweight|class.I.obesity|class.II.III.obesity|",
     "Avascular.necrosis.of.the.femoral.head..AVN.|Inflammatory.joint.disease|",
-    "Secondary.osteoarthritis|Sequelae.after.childhood.hip.disease)"), "",
+    "Secondary.osteoarthritis|Sequelae.after.childhood.hip.disease|",
+    "County)"), "",
     nms)), collapse = " + ")
   )
 }
@@ -56,7 +57,7 @@ compare_models <- function(brlasso_coefs, outcome) {
                       method = "bootstrap",
                       boot.stratified = FALSE,
                       .progress = TRUE,
-                      .options = future_options(seed = TRUE)
+                      .options = furrr_options(seed = TRUE)
                     ),
     AUC_lo        = map_dbl(AUCci, 1),
     AUC_est       = map_dbl(AUCci, 2),

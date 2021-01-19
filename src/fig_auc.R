@@ -3,6 +3,7 @@ suppressMessages({library(ProjectTemplate); load.project()})
 digs <- options("digits")
 options(digits = 2)
 
+load("cache/infection_data.RData")
 
 # Prepare data ------------------------------------------------------------
 

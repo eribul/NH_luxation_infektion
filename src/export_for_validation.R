@@ -1,5 +1,8 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/fit_brl.RData")
+load("cache/df.RData")
+
 # Hitta alla koefficientnamn som krävs för både 90 dagar och 2 år
 model_vars <-
   fit_brl %>%

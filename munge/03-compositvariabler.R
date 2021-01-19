@@ -1,5 +1,8 @@
 # Förbered kompisitvariabler som ev kan ersätta enskilda diagnoser
 
+if (!exists("categorization.Blad1"))
+  categorization.Blad1 <- readxl::read_excel("data/categorization.xlsx")
+
 # Fulfix!
 # Tidigare Fel i coder-paketet döpte "malignancy" till "malingnancy".
 # Nu åtgärdat i paketet men fortf fel i samkörningsdatabsen

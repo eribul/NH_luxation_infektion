@@ -8,6 +8,7 @@ bibliography:
 csl: the-lancet.csl
 output: 
   bookdown::word_document2:
+    number_sections: false
     reference_docx: article.dotx
     toc: false
     df_print: kable
@@ -110,7 +111,7 @@ Model development was performed by bootstrap ranking and a logistic least absolu
 
 For each outcome (PJI within 90 days or 2 years), ten-fold cross validation was performed with a range of potential penalty values ($\lambda_i$:s) in a logistic LASSO regression model. We kept the $\lambda_i$ that minimized the mean cross-validated deviance. 100 bootstrap samples were then drawn from the observed data set.[@Austin2004]
 
-Logistic LASSO regression was performed for each sample using the chosen $\lambda_i$ as penalty term. Regression coefficients were ranked based on their absolute values as a measure of variable importance. We then used Bayesian methods to estimate a posterior distribution and to identify two change points in a linear segmented piecewise regression model. The second change point was then used as a break-point. Influential predictors with absolute coefficients value above this point, scored a point. The whole process, each with 100 Bootstrap replicates, was repeated 100 times (yielding 10,000 bootstrap samples in total). Potential predictors that were selected at least `r brlasso_selection_n["main"]` out of 100 times were then used in main effects multivariable logistic regression models without penalty and without pre-normalization of numeric variables. Even more parsimonious models with potential predictors chosen at least `r brlasso_selection_n["reduced"]` out of 100 times were evaluated for comparison. Univariable prediction models based on either ASA class, the Charlson, Elixhauser, or the Rx Risk V comorbidity indices were fitted for comparison. Odds ratios for the final models were estimated with 95 % confidence intervals.
+Logistic LASSO regression was performed for each sample using the chosen $\lambda_i$ as penalty term. Regression coefficients were ranked based on their absolute values as a measure of variable importance. We then used Bayesian methods to estimate a posterior distribution and to identify two change points in a linear segmented piecewise regression model. The second change point was then used as a break-point. Influential predictors with absolute coefficients value above this point, scored a point. The whole process, each with 100 Bootstrap replicates, was repeated 100 times (yielding 10,000 bootstrap samples in total). Potential predictors that were selected at least `r brlasso_selection_n["main"]` out of 100 times were then used in main effects multivariable logistic regression models without penalty and without pre-normalization of numeric variables. Even more parsimonious models with potential predictors chosen more than `r brlasso_selection_n["reduced"]` out of 100 times were evaluated for comparison. Univariable prediction models based on either ASA class, the Charlson, Elixhauser, or the Rx Risk V comorbidity indices were fitted for comparison. Odds ratios for the final models were estimated with 95 % confidence intervals.
 
 ## Model validation
 

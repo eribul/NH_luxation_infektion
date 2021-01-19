@@ -1,5 +1,7 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+categorization.Blad1 <- readxl::read_excel("data/categorization.xlsx")
+
 tab_categorization <-
   categorization.Blad1 %>%
   mutate_all(zoo::na.locf) %>%
