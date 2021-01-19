@@ -14,7 +14,8 @@ output:
     code_folding: "hide"
     keep_md: yes
 bibliography: 
-  C:\\Users\\erik_\\Documents\\library.bib
+  # C:\\Users\\erik_\\Documents\\library.bib
+  H:\\zotero_lib.bib
 ---
 
 ```{r setup, include=FALSE}
