@@ -39,11 +39,9 @@ reops <-
 # Identifiera patienter av intresse
 pats <-
   df_shpr %>%
-
   transmute(
     LopNr = as.character(LopNr),
-    P_SurgDate,
-    reop = IND_ReSurgReason1 | IND_ReSurgReason2
+    P_SurgDate
   )
 
 
@@ -84,3 +82,34 @@ count(cd2, code, sort = TRUE) %>%
   )
 
 
+
+# Saknade T846F ----------------------------------------------------------
+
+# NH har upptäckt att vi nog även borde ha inkluderat T846F (tidig djup infektion)
+# Vi bör kolla hur vanligt det är att dena kod förekommer utan reop
+
+T846F <- df_icd10[
+  grepl("T846F", code)
+]
+
+# inom 90 dagar
+cd_T846F <-
+  codify(
+    pats, T846F,
+    id = "LopNr", code = "code", date = "P_SurgDate",
+    code_date = "hospital", days = c(1, 90)
+  ) %>%
+  filter(in_period) %>%
+  distinct(LopNr, P_SurgDate, code)
+
+# nrow(cd_T846F) # 142 st
+
+# Hur många av dessa saknar reoperation?
+
+cd2_T846F <-
+  cd_T846F %>%
+  as_tibble() %>%
+  mutate(P_SurgDate = as.Date(P_SurgDate)) %>%
+  anti_join(reops, c("LopNr", "P_SurgDate"))
+
+# nrow(cd2_T846F) # 85
