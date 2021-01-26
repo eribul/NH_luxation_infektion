@@ -7,10 +7,9 @@ adverse_events
 .docx
 /doc/*
 diagnostics/README_cache/*
-
 cache/*
-cache_backup/*
 !cache/fit_brl_reduced_lean.RData
 !cache/categorization.*
 reports/~$rticle.docx
-cache_backup/categorization.hash
+cache_backup
+cache_T846F
