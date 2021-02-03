@@ -1,14 +1,13 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/model_reduced.RData")
+load("cache/df.RData")
+
 # Hitta alla koefficientnamn som krävs för både 90 dagar och 2 år
 model_vars <-
-  fit_brl %>%
-  mutate(
-    vars = map(fit, ~names(coef(.)))
-  ) %>%
-  select(vars) %>%
-  pluck(1) %>%
-  c(recursive = TRUE) %>%
+  model_reduced %>%
+  coef() %>%
+  names() %>%
   unique() %>%
   {.[-1]} %>%
   {gsub("TRUE|I{2,3}|Male", "", .)} %>%
@@ -19,6 +18,8 @@ model_vars <-
 # Export data frame of data needed for external validation
 ext_val_required_data <-
   df %>%
-  select(one_of(model_vars))
+  select(one_of(model_vars)) %>%
+  group_by(P_DiaGrp) %>%
+  slice(1:3)
 
 cache("ext_val_required_data")

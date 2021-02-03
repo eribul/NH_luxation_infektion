@@ -1,10 +1,13 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/model_reduced.RData")
+load("cache/df.RData")
+load("cache/models.RData")
+
 
 # Baseline levels for cqategorical variables -----------------------------------
 baseline <-
   crossing(
-    time = factor(c("90 days", "2 years")),
     term = c(
       paste("Sex:", levels(df$P_Sex)[1]),
       paste("ASA class:", levels(df$P_ASA)[1]),
@@ -12,30 +15,28 @@ baseline <-
       paste("Diagnosis:", levels(df$P_DiaGrp)[1])
     )
   ) %>%
-  mutate(beta = 0, `OR 95 % CI` = "(baseline)", p = "")
+  mutate(beta = 0, `OR 95 % CI` = "(ref)", p = "")
 
 
 # Prepare temp table ------------------------------------------------------
 
 tbl_coefs <-
-  infection_data %>%
-  unnest("all_models") %>%
+  models %>%
   filter(
     Model == "Reduced model"
   ) %>%
-  select(time, tidy) %>%
+  select(tidy) %>%
   unnest(tidy) %>%
   transmute(
-    time = factor(time, c("90d", "2y"), c("90 days", "2 years")),
     term = clean_names(term),
     term = gsub("Male sex", "Sex: Male", term),
     beta = log(estimate),
     `OR 95 % CI` = sprintf("%.2f (%.2f-%.2f)", estimate, conf.low, conf.high),
-    p    = pvalue_format(.01)(p.value)
+    p    = pvalue_format(.001)(p.value)
   ) %>%
   bind_rows(baseline) %>%
   separate(term, c("variable", "level"), sep = ": ") %>%
-  arrange(time, variable, `OR 95 % CI`) %>%
+  arrange(variable, `OR 95 % CI`) %>%
   mutate_at(vars(`OR 95 % CI`, p), ~ if_else(variable == "(Intercept)", "", .))
 
 
@@ -46,13 +47,8 @@ cache("tbl_coefs")
 
 tbl_coefs_present <-
   tbl_coefs %>%
-  group_by(time) %>%
   mutate(variable = replace(variable, duplicated(variable), "")) %>%
-  ungroup() %>%
-  mutate(
-    time = as.character(time),
-    time = replace(time, duplicated(time), "")
-  )
+  ungroup()
 
 cache("tbl_coefs_present")
 
@@ -66,7 +62,7 @@ coefs_text <-
     !duplicated(tibble(variable, level)) # ONly unique factors for 2 years
   ) %>%
   mutate(fct = !is.na(level)) %>%
-  select(time, fct, variable) %>%
+  select(fct, variable) %>%
   mutate(
     variable = tolower(variable),
     variable = case_when(
@@ -78,20 +74,22 @@ coefs_text <-
       variable == "pancreatiinsufficiency" ~ "pancreatic insufficiency",
       variable == "rheumatidisease" ~ "rheumatic disease",
       TRUE ~ variable
-    )
+    ),
+    ordinary = fct | variable == "age"
   ) %>%
-  add_count(time, variable, sort = TRUE) %>%
+  add_count(variable, sort = TRUE) %>%
   distinct() %>%
-  group_by(time, !fct) %>%
+  group_by(ordinary) %>%
   summarise(
     text = if_else(
-      !fct,
+      !ordinary,
       paste("the precense of", glue::glue_collapse(variable, sep = ", ", last = " or ")),
       paste(variable, collapse = ", ")
     )
   ) %>%
-  distinct(time, text) %>%
-  group_by(time) %>%
+  distinct(text) %>%
+  ungroup() %>%
+  arrange(!ordinary) %>%
   summarise(text = paste(text, collapse = ", and ")) %>%
   deframe()
 

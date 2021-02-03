@@ -1,5 +1,6 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/models.RData")
 
 get_beltdata <- function(cb) {
   tibble(
@@ -10,9 +11,7 @@ get_beltdata <- function(cb) {
 }
 
 df_calibration <-
-  infection_data %>%
-  select(time, all_models) %>%
-  unnest("all_models") %>%
+  models %>%
   filter(Model == "Reduced model") %>%
   mutate(
     cal_belt = furrr::future_map(
@@ -20,11 +19,10 @@ df_calibration <-
         as.numeric(.$obs == "TRUE"), .$pred, devel = "internal"),
       .progress = TRUE),
     cal_belt.p = map_dbl(cal_belt, "p.value"),
-    cal_belt = map(cal_belt, get_beltdata)
+    cal_belt   = map(cal_belt, get_beltdata)
   ) %>%
-  select(time, Model, cal_belt) %>%
-  unnest(cal_belt) %>%
-  mutate(time = factor(time, c("90d", "2y"), c("90 days", "2 years")))
+  select(Model, cal_belt) %>%
+  unnest(cal_belt)
 
 # Make figure -------------------------------------------------------------
 calplot <- function(xlim = c(0, 0.1), ylim = c(0, 0.1)) {
@@ -41,9 +39,8 @@ calplot <- function(xlim = c(0, 0.1), ylim = c(0, 0.1)) {
     legend.position = c(1, 0),
     legend.justification = c(1, 0),
     legend.title = element_blank()
-  ) +
-  facet_wrap(~ time)
+  )
 }
 
 
-ggsave("graphs/calibration.png", calplot(), height = 12, width = 20 , units = "cm")
+ggsave("graphs/calibration.png", calplot(), height = 10, width = 10 , units = "cm")

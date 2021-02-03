@@ -1,5 +1,7 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/categorization.Blad1.RData")
+
 tab_categorization <-
   categorization.Blad1 %>%
   mutate_all(zoo::na.locf) %>%

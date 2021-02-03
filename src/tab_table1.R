@@ -1,5 +1,7 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/df.RData")
+
 dft1 <-
   df %>%
   mutate(
@@ -9,8 +11,7 @@ dft1 <-
     P_BMI      = relevel(P_BMI, "under/normal weight")
   ) %>%
   select(
-    `PJI within two years` = outcome_infection_2y,
-    `PJI within 90 days` = outcome_infection_90d,
+    PJI = outcome,
     P_Age,
     P_Sex,
     P_BMI,
@@ -28,45 +29,29 @@ dft1 <-
   ) %>%
   setNames(gsub(": ", "", clean_names(names(.))))
 
-  fct <- c("Sex", "ASA class", "Elixhauser",
+fct <- c("Sex", "ASA class", "Elixhauser",
            "Charlson", "Diagnosis", "Cemented stem", "Cemented cup")
 
-t1_2y <-
+t1 <-
   tableone::CreateTableOne(
-    strata = "PJI within two years",
-    vars = setdiff(names(dft1), "PJI within two years"),
+    strata = "PJI",
+    vars = setdiff(names(dft1), "PJI"),
     factorVars = fct,
-    data = select(dft1, -`PJI within 90 days`),
+    data = dft1,
     test = FALSE
   ) %>% print(
     printToggle = FALSE
   ) %>%
   as_tibble(rownames = "what") %>%
   rename(
-    `PJI < 2 years` = `TRUE`,
-    `No PJI < 2 years` = `FALSE`
+    `PJI` = `TRUE`,
+    `No PJI` = `FALSE`
   )
 
-t1_90d <-
-  tableone::CreateTableOne(
-    strata = "PJI within 90 days",
-    vars = setdiff(names(dft1), "PJI within 90 days"),
-    factorVars = fct,
-    data = select(dft1, -`PJI within two years`),
-    test = FALSE
-  ) %>%
-  print(
-    printToggle = FALSE
-  ) %>%
-  as_tibble() %>%
-  rename(
-    `PJI < 90 days` = `TRUE`,
-    `No PJI < 90 days` = `FALSE`
-  )
 
 t1_tot <-
   tableone::CreateTableOne(
-    vars = setdiff(names(dft1), c("PJI within two years", "PJI within 90 days")),
+    vars = setdiff(names(dft1), "PJI"),
     factorVars = fct,
     data = dft1,
     test = FALSE
@@ -80,8 +65,7 @@ t1_tot <-
 
 table1 <-
   bind_cols(
-    t1_2y,
-    t1_90d,
+    t1,
     t1_tot
   ) %>%
   mutate(
@@ -93,8 +77,8 @@ table1 <-
   select(
     what,
     level,
-    `PJI < 90 days`, `No PJI < 90 days`,
-    `PJI < 2 years`, `No PJI < 2 years`,
+    PJI,
+    `No PJI`,
     Total
   )
 

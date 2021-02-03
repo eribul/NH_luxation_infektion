@@ -1,17 +1,15 @@
 suppressMessages({library(ProjectTemplate); load.project()})
 
+load("cache/models.RData")
 
 # SHAR --------------------------------------------------------------------
 
 shar_roc <-
-  infection_data %>%
-  select(outcome, time, all_models) %>%
-  unnest("all_models") %>%
+  models %>%
   unnest(roc_curve) %>%
-  select(outcome, time, Model, specificity, sensitivity) %>%
+  select(Model, specificity, sensitivity) %>%
   mutate(
-    Model = model_names(Model),
-    time = factor(time, c("90d", "2y"), c("90 days", "2 years"))
+    Model = model_names(Model)
   )
 
 # Figure ------------------------------------------------------------------
@@ -27,9 +25,8 @@ fig_roc <-
     #legend.justification = c(1, 0),
     legend.title = element_blank()
   ) +
-  facet_wrap(~ time) +
   scale_x_continuous(labels = scales::percent) +
   scale_y_continuous(labels = scales::percent)
 
 
-ggsave("graphs/roc.png", fig_roc, height = 15, width = 20, units = "cm")
+ggsave("graphs/roc.png", fig_roc, height = 15, width = 15, units = "cm")
