@@ -44,10 +44,8 @@ ae_npr <- function(df_npr, regex, endday) {
     )
 }
 
-outcome_kva_90d <- ae_npr(df_kva,   "kva",   90)
-outcome_icd_90d <- ae_npr(df_icd10, "icd10", 90)
-outcome_kva_2y  <- ae_npr(df_kva,   "kva",   2 * 365)
-outcome_icd_2y  <- ae_npr(df_icd10, "icd10", 2 * 365)
+outcome_kva <- ae_npr(df_kva,   "kva",   90)
+outcome_icd <- ae_npr(df_icd10, "icd10", 90)
 
 # Outcome from SHAR -------------------------------------------------------
 outcome_reop <- function(endday) {
@@ -57,18 +55,14 @@ outcome_reop <- function(endday) {
     # Räcker med outcome vid en av ev flera reop under perioden.
     group_by(LopNr, P_SurgDate) %>%
     summarise(
-      reop_luxation =
-        any(IND_ReSurgReason1 == "Luxation, instabilitet, subluxation") |
-        any(IND_ReSurgReason2 == "Luxation, instabilitet, subluxation"),
       roep_infektion =
         any(IND_ReSurgReason1 == "Infektion") |
         any(IND_ReSurgReason2 == "Infektion")
     )
 }
 
-outcome_reop_90d <- outcome_reop(90)
-cache("outcome_reop_90d")
-outcome_reop_2y  <- outcome_reop(2 * 356.241)
+outcome_reop <- outcome_reop(90)
+cache("outcome_reop")
 
 
 # Combine -----------------------------------------------------------------
@@ -79,32 +73,26 @@ df_outcome <- function(outcome_icd10, outcome_kva, outcome_reop) {
     left_join(as_tibble(outcome_kva), by = c("LopNr", "P_SurgDate")) %>%
     left_join(outcome_reop,           by = c("LopNr", "P_SurgDate")) %>%
     mutate(across(
-      c(roep_infektion, reop_luxation, starts_with("hip_ae_hailer")),
+      c(roep_infektion, starts_with("hip_ae_hailer")),
       coalesce, FALSE
       )
     ) %>%
     transmute(
       LopNr,
       P_SurgDate,
-      outcome_infection =
+      outcome =
         roep_infektion |
         hip_ae_hailer_icd10_infection |
-        hip_ae_hailer_kva_infection,
-      outcome_dislocation =
-        reop_luxation |
-        hip_ae_hailer_icd10_dislocation |
-        hip_ae_hailer_kva_dislocation
+        hip_ae_hailer_kva_infection
     ) %>%
-    mutate_at(vars(starts_with("outcome_")), coalesce, FALSE)
+    mutate(outcome = coalesce(outcome, FALSE))
 }
 
-df_outcome_90d <- df_outcome(outcome_icd_90d, outcome_kva_90d, outcome_reop_90d)
-df_outcome_2y  <- df_outcome(outcome_icd_2y, outcome_kva_2y, outcome_reop_2y)
+df_outcome <- df_outcome(outcome_icd, outcome_kva, outcome_reop)
 
 df_shpr <-
   df_shpr %>%
   as_tibble() %>%
-  left_join(df_outcome_90d, by = c("LopNr", "P_SurgDate")) %>%
-  left_join(df_outcome_2y, by = c("LopNr", "P_SurgDate"), suffix = c("_90d", "_2y"))
+  left_join(df_outcome, by = c("LopNr", "P_SurgDate"))
 
 cache("df_shpr")

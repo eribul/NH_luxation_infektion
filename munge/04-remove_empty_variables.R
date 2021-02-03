@@ -7,7 +7,7 @@ df0 <-
   select(
     -stime, -status,
     -contains("index"),
-    -starts_with("outcome")
+    -outcome
   )
 
 
@@ -39,20 +39,9 @@ comb_lgl_text <- function(comb_lgl) {
   glue_collapse(", ", last = " and ")
 }
 
-
-comb_lgl <-
-  tibble(
-    # outcome = c("dislocation", "infection"),
-    outcome = "infection",
-    time    = c("90d", "2y")
-  ) %>%
-  expand(outcome, time) %>%
-  mutate(
-    outcome_var = paste0("outcome_", outcome, "_", time),
-    lgl = map(outcome_var, ~ rare_conditions(df0, df[[.]])),
-    lgl_vars = map(lgl, ~.$variable),
-    lgl_text = map_chr(lgl, comb_lgl_text)
-  )
+comb_lgl <- list(lgl = rare_conditions(df0, df$outcome))
+comb_lgl$lgl_vars <- comb_lgl$lgl$variable
+comb_lgl$lgl_text <- comb_lgl_text(comb_lgl$lgl)
 
 
 # Same for factor variables -----------------------------------------------
@@ -84,24 +73,17 @@ comb_fct <- function(y) {
   pluck(1)
 }
 
-comb_rm <-
-  comb_lgl %>%
-  mutate(
-    fct = map(outcome_var, ~ comb_fct(df[[.]]))
-  )
+
+comb_rm <- c(
+  fct = comb_fct(df$outcome),
+  comb_lgl
+)
+
 
 cache("comb_rm")
 
 
 # df without those variables ----------------------------------------------
-
-# Remove lgl variables that are too unusual
-rm_unusual_lgls <- function(outcome_var, lgl_vars) {
-  df0 %>%
-  add_column(outcome = df[[outcome_var]]) %>%
-  select(-one_of(lgl_vars)) %>%
-  mutate_if(is.logical, as.factor) # needed for recipe
-}
 
 # Prepare data for modelling
 bake_data <- function(df0) {
@@ -112,39 +94,20 @@ bake_data <- function(df0) {
   bake(df0)
 }
 
-model_data <-
-  comb_rm %>%
-  mutate(
-    df0 = map2(outcome_var, lgl_vars, rm_unusual_lgls),
-    # Filter out rows whith too unusual outcome!
-    # Note that this is different comparede to simply remove the variable!
-    # An alternative would be to lump the level with others!
-    # But I don't know if that makes sence either!
-    fct = map_chr(fct, ~ if (is.null(.)) NA_character_ else .),
-    df0 = map2(df0, fct, ~ if (is.na(.y)) .x else filter(.x, eval(parse(text = .y)))),
-    df0 = map(df0, droplevels),
-    n_df0 = map_int(df0, nrow),
-    # Bake data for modelling
-    df_model = map(df0, bake_data)
-  )
-
-cache("model_data")
-
-
-
-# Tidiagre steg utgick från både infektion och luxation kombinerat.
-# JAg väljer nu att fortsätta med enbart infektion och hanteras luxation separat sernare
-
 infection_data <-
-  model_data %>%
-  dplyr::filter(outcome == "infection")
+  df0 %>%
+  add_column(outcome = df$outcome) %>%
+  select(-one_of(comb_lgl$lgl_vars)) %>%
+  mutate_if(is.logical, as.factor) %>%
+  bake_data()
+
+cache("infection_data")
 
 
 # Save list of excluded co-morbidities for presentation
 excl_factors <-
-  infection_data$lgl_text[[1]] %>%
+  comb_rm$lgl_text %>%
   {gsub("pancreatii", "pancreatic i", .)} %>%
   {gsub("AIDS/HIV hiv", "AIDS/HIV", .)}
 
 cache("excl_factors")
-
