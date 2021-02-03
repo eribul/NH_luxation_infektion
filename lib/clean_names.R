@@ -6,7 +6,12 @@ clean_names <- function(x, firstupper = TRUE, lvls = TRUE) {
   {gsub("ASA",     "ASA class: ", .)} %>%
   {gsub("BMI",     "BMI: ",       .)} %>%
   {gsub("aids",    "AIDS/HIV",    .)} %>%
-  {paste0(toupper(substr(., 1, 1)), substring(., 2))}
+  {gsub("cns",     "CNS",         .)} %>%
+  {gsub("\\.",     " ",           .)} %>%
+  {gsub("  ",      " ",           .)} %>%
+  {gsub("AVN",     "\\(AVN\\)",   .)} %>%
+  {paste0(toupper(substr(., 1, 1)), substring(., 2))} %>%
+  trimws()
 }
 
 
