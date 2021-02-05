@@ -1,7 +1,7 @@
 ---
 title: "External validation"
 author: "Erik Bulow"
-date: '2020-11-30'
+date: '2021-02-05'
 output: 
 #  github_document:
 #    toc: yes
@@ -15,6 +15,7 @@ output:
     keep_md: yes
 bibliography: 
   C:\\Users\\erik_\\Documents\\library.bib
+  # H:\\zotero_lib.bib
 ---
 
 
@@ -44,61 +45,59 @@ Load the exported models to validate (also found "manually" at [Github](https://
 
 ```r
 # Load the exported model object
-load("../cache/fit_brl_reduced_lean.RData")
+load("../cache/model_reduced_lean.RData")
 ```
 
-Let's inspect the model for 90 days just to get a sence of it:
+Let's inspect the model for 90 days just to get a sense of it:
 
 
 ```r
-fit_brl_reduced_lean$fit[[1]]
+model_reduced_lean
 ```
 
 ```
 ## 
-## Call:  glm(formula = f, family = binomial(), data = df)
+## Call:  glm(formula = f, family = binomial(), data = dfm)
 ## 
 ## Coefficients:
 ##                                          (Intercept)  
-##                                             -4.37991  
-##                                         c_cancerTRUE  
-##                                              0.39287  
+##                                             -6.30816  
 ##                                    c_cns_diseaseTRUE  
-##                                              0.59655  
-##                                  c_liver_diseaseTRUE  
-##                                              0.55059  
-##                              c_rheumatic_diseaseTRUE  
-##                                              0.33489  
-##                                              P_ASAII  
-##                                              0.34348  
-##                                             P_ASAIII  
-##                                              0.75502  
-##                                      P_BMIoverweight  
-##                                              0.30040  
-##                                 P_BMIclass I obesity  
-##                                              0.63610  
-##                            P_BMIclass II-III obesity  
-##                                              1.04056  
-##                     P_DiaGrpSecondary osteoarthritis  
-##                                              0.53775  
-##         P_DiaGrpSequelae after childhood hip disease  
-##                                              0.04766  
-## P_DiaGrpAvascular necrosis of the femoral head (AVN)  
-##                                              0.48694  
-##                   P_DiaGrpInflammatory joint disease  
-##                                              0.62063  
-##                                            P_SexMale  
-##                                              0.33145  
-##                             c_drug_alcohol_abuseTRUE  
-##                                              0.22273  
-##                                   c_peptic_ulcerTRUE  
-##                                              0.35725  
+##                                              0.69078  
 ##                    c_fluid_electrolyte_disordersTRUE  
-##                                              0.38245  
+##                                              0.41817  
+##                                  c_liver_diseaseTRUE  
+##                                              0.74842  
+##                                              P_ASAII  
+##                                              0.17935  
+##                                             P_ASAIII  
+##                                              0.44308  
+##                                      P_BMIoverweight  
+##                                              0.38824  
+##                                 P_BMIclass I obesity  
+##                                              0.80532  
+##                            P_BMIclass II-III obesity  
+##                                              1.39988  
+##                     P_DiaGrpSecondary osteoarthritis  
+##                                              0.73652  
+##         P_DiaGrpSequelae after childhood hip disease  
+##                                              0.39169  
+## P_DiaGrpAvascular necrosis of the femoral head (AVN)  
+##                                              0.58384  
+##                   P_DiaGrpInflammatory joint disease  
+##                                              0.93573  
+##                                            P_SexMale  
+##                                              0.37483  
+##                                     c_arrhythmiaTRUE  
+##                                              0.26580  
+##                           c_lung_airways_diseaseTRUE  
+##                                              0.27218  
+##                                                P_Age  
+##                                              0.02289  
 ## 
-## Degrees of Freedom: 88829 Total (i.e. Null);  88812 Residual
-## Null Deviance:	    26290 
-## Residual Deviance: 25360 	AIC: 25400
+## Degrees of Freedom: 88829 Total (i.e. Null);  88813 Residual
+## Null Deviance:	    20420 
+## Residual Deviance: 19550 	AIC: 19590
 ```
 
 We should now use this model with the `predict` function combined with new data from Denmark. So, how should this data look like?
@@ -122,9 +121,9 @@ knitr::include_graphics("../graphs/flowchart.png")
 
 ## Outcome
 
-The outcome variables are simply called `outcome` in each model (hence, adjusted for each model). Those are logical/boolean (or 0/1-numeric) indicating whether the patient got PJI within 90 days (2 years) after THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded all patients who died within two years. A competing risk model for survival analysis might be better but we were pragmatic in this case.
+The outcome variables is simply called `outcome` . This is a logical/boolean (or 0/1-numeric) variable indicating whether the patient got PJI within 90 days after THA (`TRUE`/1) or not (`FALSE`/0).
 
-We identified PJI within 90 days/2 years as either the primary or secondary reson for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospitl visit/admission during this period.
+We identified PJI within 90 days as either the primary or secondary reason for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospital visit/admission during this period.
 
 We used regular expression to identify such codes:
 
@@ -136,9 +135,9 @@ coder::hip_ae_hailer %>%
 
 <div class="kable-table">
 
-|group     |icd10                                                                                  |kva           |
-|:---------|:--------------------------------------------------------------------------------------|:-------------|
-|Infection |(M(00(1&#124;[0289]F?)&#124;86([01]F&#124;6F?)))&#124;T(8(14&#124;4(5[FX]?&#124;7F?))) |NFS[0-9]{0,2} |
+|group     |icd10                                                                                        |kva                     |
+|:---------|:--------------------------------------------------------------------------------------------|:-----------------------|
+|Infection |(M(00(1&#124;[0289]F?)&#124;86([0-689]F?)))&#124;T(8(1[34]&#124;4(5[FX]?&#124;6F&#124;7F?))) |NF(S[0-59]&#124;W[56])9 |
 
 </div>
 
@@ -153,14 +152,14 @@ head(ext_val_required_data)
 
 <div class="kable-table">
 
-|c_cancer |c_cns_disease |c_liver_disease |c_rheumatic_disease |P_ASA |P_BMI                |P_DiaGrp               |P_Sex  |c_drug_alcohol_abuse |c_peptic_ulcer |c_fluid_electrolyte_disorders |c_arrhythmia |
-|:--------|:-------------|:---------------|:-------------------|:-----|:--------------------|:----------------------|:------|:--------------------|:--------------|:-----------------------------|:------------|
-|FALSE    |FALSE         |FALSE           |FALSE               |III   |overweight           |Primary osteoarthritis |Female |FALSE                |FALSE          |FALSE                         |FALSE        |
-|FALSE    |FALSE         |FALSE           |FALSE               |II    |under/normal weight  |Primary osteoarthritis |Female |FALSE                |FALSE          |FALSE                         |FALSE        |
-|FALSE    |FALSE         |FALSE           |FALSE               |I     |under/normal weight  |Primary osteoarthritis |Female |FALSE                |FALSE          |FALSE                         |FALSE        |
-|FALSE    |FALSE         |FALSE           |TRUE                |II    |overweight           |Primary osteoarthritis |Female |FALSE                |FALSE          |FALSE                         |FALSE        |
-|FALSE    |FALSE         |FALSE           |FALSE               |II    |overweight           |Primary osteoarthritis |Female |FALSE                |FALSE          |FALSE                         |FALSE        |
-|FALSE    |FALSE         |FALSE           |FALSE               |II    |class II-III obesity |Primary osteoarthritis |Female |FALSE                |FALSE          |FALSE                         |FALSE        |
+|c_cns_disease |c_fluid_electrolyte_disorders |c_liver_disease |P_ASA |P_BMI                |P_DiaGrp               |P_Sex  |c_arrhythmia |c_lung_airways_disease | P_Age|
+|:-------------|:-----------------------------|:---------------|:-----|:--------------------|:----------------------|:------|:------------|:----------------------|-----:|
+|FALSE         |FALSE                         |FALSE           |III   |overweight           |Primary osteoarthritis |Female |FALSE        |TRUE                   |    79|
+|FALSE         |FALSE                         |FALSE           |II    |under/normal weight  |Primary osteoarthritis |Female |FALSE        |FALSE                  |    79|
+|FALSE         |FALSE                         |FALSE           |I     |under/normal weight  |Primary osteoarthritis |Female |FALSE        |FALSE                  |    49|
+|FALSE         |FALSE                         |FALSE           |II    |overweight           |Primary osteoarthritis |Female |FALSE        |FALSE                  |    76|
+|FALSE         |FALSE                         |FALSE           |II    |overweight           |Primary osteoarthritis |Female |FALSE        |FALSE                  |    72|
+|FALSE         |FALSE                         |FALSE           |II    |class II-III obesity |Primary osteoarthritis |Female |FALSE        |FALSE                  |    69|
 
 </div>
 
@@ -172,12 +171,11 @@ names(ext_val_required_data)
 ```
 
 ```
-##  [1] "c_cancer"                      "c_cns_disease"                
-##  [3] "c_liver_disease"               "c_rheumatic_disease"          
-##  [5] "P_ASA"                         "P_BMI"                        
-##  [7] "P_DiaGrp"                      "P_Sex"                        
-##  [9] "c_drug_alcohol_abuse"          "c_peptic_ulcer"               
-## [11] "c_fluid_electrolyte_disorders" "c_arrhythmia"
+##  [1] "c_cns_disease"                 "c_fluid_electrolyte_disorders"
+##  [3] "c_liver_disease"               "P_ASA"                        
+##  [5] "P_BMI"                         "P_DiaGrp"                     
+##  [7] "P_Sex"                         "c_arrhythmia"                 
+##  [9] "c_lung_airways_disease"        "P_Age"
 ```
 
 Some of those are factor variables:
@@ -215,7 +213,7 @@ ext_val_required_data %>%
 </div>
 
 -   `P_Sex` and `P_ASA` should be self-explanatory
--   `P_BMI` is a broader categorization based on BMI and the [WHO classification] (<https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi>) where overweight = "pre-obesity"  
+-   `P_BMI` is a broader categorization based on BMI and the [WHO classification] (<https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi>) where overweight = "pre-obesity"
 -   `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped into broader categories.
 
 
@@ -314,13 +312,12 @@ comorbs
 ```
 
 ```
-## [1] "c_cancer"                      "c_cns_disease"                
-## [3] "c_liver_disease"               "c_rheumatic_disease"          
-## [5] "c_drug_alcohol_abuse"          "c_peptic_ulcer"               
-## [7] "c_fluid_electrolyte_disorders" "c_arrhythmia"
+## [1] "c_cns_disease"                 "c_fluid_electrolyte_disorders"
+## [3] "c_liver_disease"               "c_arrhythmia"                 
+## [5] "c_lung_airways_disease"
 ```
 
-... are logical/boolean indicators of comorbidities based on ICD-10/ATC codes from one year prior to THA, as recorded in our National Patient Register and medical prescription register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in \@Quan2005, and as RxRisk V according to table 1 in \@Pratt2018. Those conditions were then further combined according to table 1 in the drafted manuscript:
+... are logical/boolean indicators of comorbidities based on ICD-10 codes from one year prior to THA, as recorded in our National Patient Register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in \@Quan2005. Those conditions were then further combined according to table 1 in the drafted manuscript:
 
 
 ```r
@@ -341,13 +338,10 @@ tab_categorization %>%
 |Comorbidities by groups     |Charlson                                             |Elixhauser                                                     |
 |:---------------------------|:----------------------------------------------------|:--------------------------------------------------------------|
 |Arrhythmia                  |NA                                                   |Cardiac arrhythmias                                            |
-|Cancer                      |Malignancy, Metastatic solid tumor                   |Lymphoma, Metastatic cancer, Solid tumor                       |
 |CNS disease                 |Dementia, Hemiplegia or paraplegia                   |Depression, Paralysis, Other neurological disorders, Psychoses |
-|Drug alcohol abuse          |NA                                                   |Alcohol abuse, Drug abuse                                      |
 |Fluid electrolyte disorders |NA                                                   |Fluid electrolyte disorders                                    |
 |Liver disease               |Mild liver disease, Moderate or severe liver disease |Liver disease                                                  |
-|Peptic ulcer                |Peptic ulcer disease                                 |Peptic ulcer disease                                           |
-|Rheumatic disease           |Rheumatic disease                                    |Rheumatoid arthritis                                           |
+|Lung airways disease        |Chronic pulmonary disease                            |Chronic pulmonary disease, Pulmonary circulation disorder      |
 
 </div>
 
@@ -357,14 +351,14 @@ We have the 90 day model from the shared R object;
 
 
 ```r
-model <- fit_brl_reduced_lean$fit[[1]]
+model <- model_reduced_lean
 ```
 
 Let's assume we now have the `outcome` variable and a data frame `X` with the predictors (I will use the Swedish data just as an example but this should of course be changed for the external validation).
 
 
 ```r
-outcome <- df$outcome_infection_90d
+outcome <- df$outcome
 X       <- ext_val_required_data
 ```
 
@@ -415,7 +409,7 @@ AUCci
 ```
 
 ```
-## 95% CI: 0.6502-0.6729 (100 non-stratified bootstrap replicates)
+## 95% CI: 0.6645-0.6853 (100 non-stratified bootstrap replicates)
 ```
 
 ```r
@@ -436,7 +430,7 @@ plot(calibration, xlim = c(0, 0.3), ylim = c(0, 0.3))
 ## [1] 2
 ## 
 ## $p.value
-## [1] 0
+## [1] 0.3455003
 ```
 
 # Re-calibrated intercept
@@ -478,7 +472,7 @@ AUCci2
 ```
 
 ```
-## 95% CI: 0.651-0.6726 (100 non-stratified bootstrap replicates)
+## 95% CI: 0.6644-0.6853 (100 non-stratified bootstrap replicates)
 ```
 
 ```r
@@ -495,10 +489,10 @@ plot(calibration2, xlim = c(0, 0.03), ylim = c(0, 0.06))
 
 ```
 ## $m
-## [1] 1
+## [1] 2
 ## 
 ## $p.value
-## [1] 0
+## [1] 0.3455003
 ```
 
 # Re-calibration of intercenpt and calibration slope
@@ -536,7 +530,7 @@ AUCci3
 ```
 
 ```
-## 95% CI: 0.6505-0.6726 (100 non-stratified bootstrap replicates)
+## 95% CI: 0.6628-0.6863 (100 non-stratified bootstrap replicates)
 ```
 
 ```r
@@ -556,7 +550,7 @@ plot(calibration3, xlim = c(0, 0.03), ylim = c(0, 0.06))
 ## [1] 2
 ## 
 ## $p.value
-## [1] 0.03472188
+## [1] 0.02293682
 ```
 
 # Export data to Sweden
@@ -616,9 +610,5 @@ save(
   file = "export_90d.RData"
 )
 ```
-
-# 2 years
-
-Repeat for the 2-year model.
 
 # Bibliography

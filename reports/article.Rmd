@@ -1,6 +1,6 @@
 ---
 title: "Prediction of Periprosthetic Joint Infection after Total Hip Arthroplasty: a simplified and externally validated model based on observational registry data from Sweden and Denmark"
-author: Erik Bulow,^1,2^ Alma Besic Pedersen,^3^ Ina Trolle Andersen,^4^ Ola Rolfson,^1,2^  Nils P. Hailer^5^
+author: Erik Bulow,^1,2^ Alma Besic Pedersen,^3^ Ina Trolle Andersen,^4^ Ola Rolfson,^1,2^  Nils P. Hailer^5^ **Ute Hahn + ? + decide order)**
 date: '`r Sys.Date()`'
 bibliography: 
 #  H:/zotero_lib.bib
@@ -11,6 +11,7 @@ output:
     reference_docx: article.dotx
     toc: false
     df_print: kable
+    number_sections: false
 ---
 
 ```{r setup, include = FALSE}
@@ -42,7 +43,7 @@ Vectorize(load, "file")(cache_files[filesizes < 10], .GlobalEnv)
 4.  XXX, Denmark
 5.  Department of Orthopaedics, Institute of Surgical Sciences, Uppsala University Hospital, Uppsala, Sweden
 
-**Correspondance:** [erik.bulow\@vgregion.se](mailto:erik.bulow@vgregion.se){.email}; +46 70 08 234 28; Svenska Hoftprotesregistret, Registercentrum Vastra Gotaland, SE-413 45, Sweden
+**Correspondance:** [erik.bulow\@gu.se](mailto:erik.bulow@vgregion.se){.email}; +46 70 08 234 28; The Swedish Joint Arthroplasty Register, Registercentrum Vastra Gotaland, SE-413 45, Sweden
 
 # Note!
 
@@ -74,9 +75,9 @@ get_auc <- function(model, version = "1") {
 
 # Abstract
 
-**OJECTIVE:** Periprosthetic joint infection (PJI) after total hip arthroplasty (THA) is a devastating complication with enormous impact on mortality, quality of life, and healthcare resources. Previous attempts at developing risk calculators are hampered by poor predictive performance of the proposed models or a lack of external validation, and no model is derived on a European population. We thus developed a parsimonious model to predict PJI within 90 days and two years after elective THA.
+**OJECTIVE:** Periprosthetic joint infection (PJI) after total hip arthroplasty (THA) is a devastating complication with enormous impact on mortality, quality of life, and health care resources. Previous attempts at developing risk calculators are hampered by poor predictive performance of the proposed models or a lack of external validation, and no model is derived on a European population. We thus developed a parsimonious model to predict PJI within 90 days after elective THA.
 
-**PARTICIPANTS AND METHODS:** We analysed `r nmbr(N_shar)` patients recorded in the Swedish Hip Arthroplasty Register `r period` and obtained data on comorbidities and socioeconomic background variables from the National Patient Register and Statistics Sweden. Logistic least absolute shrinkage and selection operator (LASSO) regression was applied to develop prediction models for PJI within 90 days after surgery. Models were internally validated by bootstrapping and externally validated on a cohort of **XXX** patients from **XXX**. We assessed model performance by analysing the area under the receiver operation characteristics curve (AUC) and by calibration belt plots.
+**PARTICIPANTS AND METHODS:** We analyzed `r nmbr(N_shar)` patients recorded in the Swedish Hip Arthroplasty Register `r period` and obtained data on comorbidities and socioeconomic background variables from the National Patient Register and Statistics Sweden. Logistic least absolute shrinkage and selection operator (LASSO) regression was applied to develop prediction models for PJI within 90 days after surgery. Models were internally validated by bootstrapping and externally validated on a cohort of **XXX** patients from The Danish Hip Arthroplasty Register. We assessed model performance by the area under the receiver operation characteristics curve (AUC) and by calibration belt plots.
 
 **RESULTS:** The crude incidence rate of PJI after THA was `r crude_rate * 100` % within 90 days in the Swedish derivation cohort. A prediction model for PJI within 90 days combined `r coefs_text`, resulting in an `r get_auc("Reduced model", "2")` internally and **(AUC=XXX, 95% CI: XXX to XXX)** externally. These models were superior to traditional models based on the American Society for Anesthesiologists (ASA) classification `r get_auc("ASA class")`, Charlson `r get_auc("Charlson")`, Elixhauser `r get_auc("Elixhauser")`, and the Rx Risk V `r get_auc("Rx Risk V")` comorbidity indices.
 
@@ -94,7 +95,7 @@ We used data from the Swedish Hip Arthroplasty Register (SHAR) for model derivat
 
 ## Derivation cohort (Sweden)
 
-The derivation cohort was obtained from patients recorded in the SHAR `r period`. The starting point was chosen because registration of ASA class and body mass index (BMI) in the SHAR was initiated in 2008, and we had no access to data from the national patient register (NPR) after 2015. Data linkage was achieved by using personal identity numbers that are assigned to all Swedish residents at birth or immigration.[@Ludvigsson2009; @Cnudde2016] The diagnosis underlying the index THA procedure (categorized into `r glue::glue_collapse(tolower(levels(df$P_DiaGrp)), ", ", last = " and ") %>% {gsub("\\(avn\\)", "[AVN]", .)}`), type of fixation (cemented or uncemented stem and cup respectively), age at index surgery, sex, BMI, ASA class, type of hospital, and year of surgery, were obtained from the SHAR. Data on comorbidities for one year prior to index surgery were obtained from the NPR where diagnoses based on in- and outpatient episodes in all private and public hospitals are coded according to the ICD-10 together with admission and discharge dates. Data on marital status and the educational level of patients was obtained from the longitudinal integration database for health insurance and labor market studies (LISA) from Statistics Sweden. The SHAR has completeness of 96-98 % and 100 % coverage,[@Karrholm2018] the LISA has coverage of 98 % with 85 % accuracy, and completeness for the NPR is above 99 % and the positive predictive value is 85-95 %.[@Ludvigsson2011] Death dates were linked from the national population register. Only the last operated hip was considered for patients with bilateral THA.[@Bulow2020]. Patients with missing information on, or an ASA class of IV and above, were excluded, as were patients with missing information on BMI or a measurement above 50. Patients with missing information on educational levels or the type of hospital performing index surgery were also excluded.
+The derivation cohort was obtained from patients recorded in the SHAR `r period`. The starting point was chosen because registration of ASA class and body mass index (BMI) in the SHAR was initiated in 2008, and we had no access to data from the national patient register (NPR) after 2015. Data linkage was achieved by using personal identity numbers that are assigned to all Swedish residents at birth or immigration.[@Ludvigsson2009; @Cnudde2016] The diagnosis underlying the index THA procedure (categorized into `r glue::glue_collapse(tolower(levels(df$P_DiaGrp)), ", ", last = " and ") %>% {gsub("\\(avn\\)", "[AVN]", .)}`), type of fixation (cemented or uncemented stem and cup respectively), age at index surgery, sex, BMI, ASA class, type of hospital, and year of surgery, were obtained from the SHAR. Data on comorbidities for one year prior to index surgery were obtained from the NPR where diagnoses based on in- and outpatient episodes in all private and public hospitals are coded according to the ICD-10 together with admission and discharge dates. Data on marital status and the educational level of patients was obtained from the longitudinal integration database for health insurance and labor market studies (LISA) from Statistics Sweden. The SHAR has completeness of 96-98 % and 100 % coverage,[@Karrholm2018] the LISA has coverage of 98 % with 85 % accuracy, and completeness for the NPR is above 99 % and the positive predictive value is 85-95 %.[@Ludvigsson2011] Death dates were linked from the national population register. Only the last operated hip was considered for patients with bilateral THA.[@Bulow2020] Patients with missing information on, or an ASA class of IV and above, were excluded, as were patients with missing information on BMI or a measurement above 50. Patients with missing information on educational levels or the type of hospital performing index surgery were also excluded.
 
 ## External validation cohort (Denmark)
 
@@ -108,7 +109,7 @@ Model development was performed by bootstrap ranking and a logistic least absolu
 
 Ten-fold cross validation was performed with a range of potential penalty values ($\lambda_i$:s) in a logistic LASSO regression model. We kept the $\lambda$ that minimized the mean cross-validated deviance. 100 bootstrap samples were then drawn from the observed data set.[@Austin2004]
 
-Logistic LASSO regression was performed for each sample using the chosen $\lambda$ as penalty term. Regression coefficients were ranked based on their absolute values as a measure of variable importance. We then used Bayesian methods to estimate a posterior distribution and to identify two change points in a linear segmented piecewise regression model. The second change point was then used as a break-point. Influential predictors with absolute coefficients value above this point, scored a point. The whole process, each with 100 Bootstrap replicates, was repeated 100 times (yielding 10,000 bootstrap samples in total). Potential predictors that were selected at least `r brlasso_selection_n["main"]` out of 100 times were then used in main effects multivariable logistic regression models without penalty and without pre-normalization of numeric variables. Even more parsimonious models with potential predictors chosen at least `r brlasso_selection_n["reduced"]` out of 100 times were evaluated for comparison. Univariable prediction models based on either ASA class, the Charlson, Elixhauser, or the Rx Risk V comorbidity indices were fitted for comparison. The Rx Risk V index is a comorbidity index based on medical prescriptions coded by the Anatomical Therapeutic Chemical (ATC) classification system during one year prior to surgery. This data was retrieved from the Swedish national prescription register and classified according to Pratt et al.[@Pratt2018] Odds ratios for the final models were estimated with 95 % confidence intervals.
+Logistic LASSO regression was performed for each sample using the chosen $\lambda$ as penalty term. Regression coefficients were ranked based on their absolute values as a measure of variable importance. We then used Bayesian methods to estimate a posterior distribution and to identify two change points in a linear segmented piecewise regression model. The second change point was then used as a break-point. Influential predictors with absolute coefficients value above this point, scored a point. The whole process, each with 100 Bootstrap replicates, was repeated 100 times (yielding 10,000 bootstrap samples in total). Potential predictors that were selected at least `r brlasso_selection_n["main"]` out of 100 times were then used in a main effects multivariable logistic regression model without penalty and without pre-normalization of numeric variables. An even more parsimonious model with potential predictors chosen at least `r brlasso_selection_n["reduced"]` out of 100 times were evaluated for comparison. Univariable prediction models based on either ASA class, the Charlson, Elixhauser, or the Rx Risk V comorbidity indices were fitted for comparison. The Rx Risk V index is a comorbidity index based on medical prescriptions coded by the Anatomical Therapeutic Chemical (ATC) classification system during one year prior to surgery. This data was retrieved from the Swedish national prescription register and classified according to Pratt et al.[@Pratt2018] Odds ratios for the final models were estimated with 95 % confidence intervals.
 
 ## Model validation
 
@@ -116,7 +117,7 @@ Each developed model was used to predict the probability of PJI within 90 days f
 
 ## Statistical tools
 
-We built an online web calculator available at **XXX** to be used in clinical practice. `r R.version.string` (R Foundation for Statistical Computing, Vienna, Austria) with significant packages tidyverse, tidymodels, furrr, pROC, decoder, coder and shiny were used.
+We built an online web calculator available at **XXX** to be used in clinical practice. `r R.version.string` (R Foundation for Statistical Computing, Vienna, Austria) with significant packages tidyverse, tidymodels, furrr, pROC, decoder, coder[@Bulow2020b] and shiny were used.
 
 ## Ethical approval
 
@@ -134,7 +135,7 @@ comorb <- function(x) {
 
 ## Study participants
 
-We included `r nmbr(N_shar)` patients (`r mean(df$P_Sex == "Male") * 100` % males) with a mean age of `r age` years in the derivation cohort from the SHAR (Fig. \@ref(fig:flowchart), left panel). `r crude_rate * 100` % (n = `r format(sum(df$outcome), big.mark = ",")`) of the patients developed a PJI within 90 days (Tab. \@ref(tab:tab1)). The proportion of patients with ASA class III was `r comorb(df$P_ASA == "III")`; `r comorb(df$CCI_index_quan_original > 0)` had at least one comorbidity according to the Charlson comorbidity index, `r comorb(df$ECI_index_sum_all > 0)` according to Elixhauser index, and `r comorb(df$Rx_index_pratt > 0)` had medications classified according to Rx Risk V. In addition, **XXX** patients from **XXX** were included as an external validation cohort (Fig. \@ref(fig:flowchart), right panel).
+We included `r nmbr(N_shar)` patients (`r mean(df$P_Sex == "Male") * 100` % males) with a mean age of `r age` years in the derivation cohort from the SHAR (Fig. \@ref(fig:flowchart), left panel). `r crude_rate * 100` % (n = `r format(sum(df$outcome), big.mark = ",")`) of the patients developed a PJI within 90 days (Tab. \@ref(tab:tab1)). The proportion of patients with ASA class III was `r comorb(df$P_ASA == "III")`; `r comorb(df$CCI_index_quan_original > 0)` had at least one comorbidity according to the Charlson comorbidity index, `r comorb(df$ECI_index_sum_all > 0)` according to Elixhauser index, and `r comorb(df$Rx_index_pratt > 0)` had medications classified according to Rx Risk V. In addition, **XXX** patients from DHR were included as an external validation cohort (Fig. \@ref(fig:flowchart), right panel).
 
 ## Model development and internal validation
 
@@ -154,7 +155,7 @@ We found that a multivariable main effects logistic regression model based on so
 
 ## Clinical usage
 
-Since the prediction model was based on easily accessible information it can be translated into a simple formula $\hat p = 1/(1 + e^{-\hat \alpha - \mathbf{\hat \beta X}})$ where $\hat p$ is the estimated probability, $\hat \alpha$ and $\mathbf{\beta} = \hat\beta_1, \hat\beta_2, \ldots, \hat\beta_k$ are the estimated intercept and coefficients (Tab. \@ref(tab:coefs)) and $\mathbf{X} = X_1, X_2, \ldots, X_k$ are corresponding patient characteristics. For example, `r examples$desc` for PJI within 90 days.
+Since the prediction model was based on easily accessible information it can be translated into a simple formula $\hat p = 1/(1 + e^{-\hat \alpha - \mathbf{\hat \beta X}})$ where $\hat p$ is the estimated probability, $\hat \alpha$ and $\mathbf{\beta} = \hat\beta_1, \hat\beta_2, \ldots, \hat\beta_k$ are the estimated intercept and coefficients (Tab. \@ref(tab:coefs)) and $\mathbf{X} = X_1, X_2, \ldots, X_k$ are corresponding patient characteristics. For example, `r examples$desc` for PJI within 90 days. Note, however, that observed proportions above 10 % were rare. Predicted probabilities above this limit are therefore subject to extrapolation.
 
 ## Model predictors
 
@@ -177,6 +178,8 @@ Although mentioned as risk factors for surgical site infections after joint arth
 ## Strengths and limitations
 
 Our study is hampered by the limitations inherent to observational research, such as misclassification, and residual confounding due to known confounders that we had no information on, or due to unknown confounders. Importantly, some previously identified risk factors for PJI were not included in our models, mostly because we lacked detailed information on laboratory findings and non-prescribed medications.
+
+Although, not a strict limitation, it should be noted that the aim of prediction is different from traditional statistical inference. As such, confidence intervals presented for the model coefficients (Table \@ref(tab:coefs)) were based solely on the final logistic regression model. Additional uncertainty introduced by the variable selection process was not incorporated. Hence, those intervals should not be interpreted in support of any implicit hypothesis testing concerning the relevance of any individual variables. Also, the individual odds ratios should not be interpreted as effect measures of individual relations. Some variables are correlated. It is therefore not always possible to hold all other variables constant while changing only the relevant one.
 
 The presence of diabetes was not among the predictor variables selected in our models, although it was almost double as frequent among patients with PJI than among those without (data not shown). This is in disagreement with numerous observational studies describing an increased risk of developing PJI after both THA or total knee arthroplasty,[@Pedersen2010; @Maoz2015; @Everhart2013] and diabetes is also found among the risk factors in previously developed risk calculators.[@Wingert2016a; @Tan2018; @Inacio2015] On the other hand, diabetes is not consistently found to be associated with the risk of surgical site infection or PJI after THA surgery.[@Namba2012] Peri-operative hyperglycemia is a predictor of PJI after total joint replacement of the hip or knee, and information on laboratory parameters such as morning blood glucose or HBA1c could have improved the predictive power of our models, but we had no access to such information.[@Mraovic2011; @Iorio2012] In analogy, low preoperative hemoglobin is associated with the risk of developing surgical site infection,[@Rasouli2014a] but although we had access to the ICD codes defining the presence of anemia, we had no information on actual laboratory findings. Use of TNF-a blockers may be associated with the risk of developing PJI.[@Gilson2010; @Momohara2011] Similarly, intra-articular steroid application may enhance this risk,[@Cancienne2015] but injections given by physicians would not necessarily be identifiable within a Swedish registry setting. Operating times, or, in the case of knee surgery, tourniquet times, are associated with the risk of PJI after hip or knee joint replacement,[@Maoz2015; @Willis-Owen2010] and procedure time is one of the risk factors in the Mayo PJI risk score,[@Berbari2012] but we had no information on this potentially important parameter. The question of what other variables might be needed to further refine prediction models remains open, but information that is notoriously difficult to obtain within the setting of large register studies, such as smoking status, might be of value.
 
@@ -206,20 +209,20 @@ knitr::include_graphics("../graphs/flowchart.png")
 
 ##### PAGE BREAK
 
-```{r rocs, fig.cap = "Receiver Operation Characteristics (ROC) curves combines sensitivity and specificity tp illustrate discriminative abilities of the different models. The reduced model perform almost as good as the main model for prediction of PJI within 90 days after surgery, and as good for PJI within 2 years."}
+```{r rocs, fig.cap = "Receiver Operation Characteristics (ROC) curves combines sensitivity and specificity to illustrate discriminative abilities of the different models. The main and reduced models performed almost identival for prediction of PJI within 90 days after surgery."}
 knitr::include_graphics("../graphs/roc.png")
 ```
 
 ##### PAGE BREAK
 
-```{r aucci, fig.cap = "Area Under the Receiver Operation Characteristics Curve (AUC) as a measure of predictive discriminative ability with 95 % bootstrap confidence intervals. The reduced model performs no different than the main model, but both of these perform better than traditional comorbidity measures alone."}
+```{r aucci, fig.cap = "Area Under the Receiver Operation Characteristics Curve (AUC) as a measure of predictive discriminative ability with 95 % bootstrap confidence intervals. The reduced model performs no different than the main model, and both of these perform better than traditional comorbidity measures alone."}
 
 knitr::include_graphics("../graphs/auc_ci.png")
 ```
 
 ##### PAGE BREAK
 
-```{r sep, fig.cap = "The vast majority of patients did not have PJI. Hence, the blue bars dominates the histograms (upper panels; note the scales). Normalized density plots reveals however, that patients with PJI had, on average, higher estimated probabilities for this adverse event (lower panels)."}
+```{r sep, fig.cap = "The vast majority of patients did not have PJI. Hence, the blue bars dominates the histograms (left panel; note the scales). A normalized density plot reveals however, that patients with PJI had, on average, higher estimated probabilities for this adverse event (lower panels)."}
 knitr::include_graphics("../graphs/separation.png")
 ```
 

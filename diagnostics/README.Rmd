@@ -14,8 +14,8 @@ output:
     code_folding: "hide"
     keep_md: yes
 bibliography: 
-  # C:\\Users\\erik_\\Documents\\library.bib
-  H:\\zotero_lib.bib
+  C:\\Users\\erik_\\Documents\\library.bib
+  # H:\\zotero_lib.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -45,17 +45,17 @@ if (length(pkgsinst)) install.packages(pkgsinst)
 purrr::walk(pkgs, ~suppressPackageStartupMessages(library(., character.only = TRUE)))
 ```
 
-Load the exported models to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)). This is a nested data frame with one row for each prediction period (90 days and 2 years). Column `fit` contains `glm` objects stripped from any personal patient data.
+Load the exported models to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)).
 
 ```{r}
 # Load the exported model object
-load("../cache/fit_brl_reduced_lean.RData")
+load("../cache/model_reduced_lean.RData")
 ```
 
-Let's inspect the model for 90 days just to get a sence of it:
+Let's inspect the model for 90 days just to get a sense of it:
 
 ```{r}
-fit_brl_reduced_lean$fit[[1]]
+model_reduced_lean
 ```
 
 We should now use this model with the `predict` function combined with new data from Denmark. So, how should this data look like?
@@ -76,9 +76,9 @@ knitr::include_graphics("../graphs/flowchart.png")
 
 ## Outcome
 
-The outcome variables are simply called `outcome` in each model (hence, adjusted for each model). Those are logical/boolean (or 0/1-numeric) indicating whether the patient got PJI within 90 days (2 years) after THA (`TRUE`/1) or not (`FALSE`/0). Note that we had previously excluded all patients who died within two years. A competing risk model for survival analysis might be better but we were pragmatic in this case.
+The outcome variable is simply called `outcome` . This is a logical/boolean (or 0/1-numeric) variable indicating whether the patient got PJI within 90 days after THA (`TRUE`/1) or not (`FALSE`/0).
 
-We identified PJI within 90 days/2 years as either the primary or secondary reson for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospitl visit/admission during this period.
+We identified PJI within 90 days as either the primary or secondary reason for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospital visit/admission during this period.
 
 We used regular expression to identify such codes:
 
@@ -114,7 +114,7 @@ ext_val_required_data %>%
 ```
 
 -   `P_Sex` and `P_ASA` should be self-explanatory
--   `P_BMI` is a broader categorization based on BMI and the [WHO classification] (<https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi>) where overweight = "pre-obesity"\
+-   `P_BMI` is a broader categorization based on BMI and the [WHO classification] (<https://www.euro.who.int/en/health-topics/disease-prevention/nutrition/a-healthy-lifestyle/body-mass-index-bmi>) where overweight = "pre-obesity"
 -   `P_DiaGrp` is based on ICD-10 codes recorded in SHAR and grouped into broader categories.
 
 ```{r}
@@ -131,7 +131,7 @@ comorbs <- nms[startsWith(nms, "c_")]
 comorbs
 ```
 
-... are logical/boolean indicators of comorbidities based on ICD-10/ATC codes from one year prior to THA, as recorded in our National Patient Register and medical prescription register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in \@Quan2005, and as RxRisk V according to table 1 in \@Pratt2018. Those conditions were then further combined according to table 1 in the drafted manuscript:
+... are logical/boolean indicators of comorbidities based on ICD-10 codes from one year prior to THA, as recorded in our National Patient Register. Individual codes were grouped according to Charlson and Elixhauser as codified by table 2 in \@Quan2005. Those conditions were then further combined according to table 1 in the drafted manuscript:
 
 ```{r}
 comorbs_nms <- 
@@ -151,13 +151,13 @@ tab_categorization %>%
 We have the 90 day model from the shared R object;
 
 ```{r}
-model <- fit_brl_reduced_lean$fit[[1]]
+model <- model_reduced_lean
 ```
 
 Let's assume we now have the `outcome` variable and a data frame `X` with the predictors (I will use the Swedish data just as an example but this should of course be changed for the external validation).
 
 ```{r}
-outcome <- df$outcome_infection_90d
+outcome <- df$outcome
 X       <- ext_val_required_data
 ```
 
@@ -338,9 +338,5 @@ save(
   file = "export_90d.RData"
 )
 ```
-
-# 2 years
-
-Repeat for the 2-year model.
 
 # Bibliography
