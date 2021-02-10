@@ -88,4 +88,3 @@ df <-
   rename_all(~ gsub("charlson_icd10", "CCI", .)) %>%
   rename_all(~ gsub("elix_icd10", "ECI", .)) %>%
   rename_all(~ gsub("rxriskv(_regex_pratt)?", "Rx", .))
-

@@ -8,6 +8,9 @@ df <- rename(df, CCI_malignancy = CCI_malingnancy)
 
 # Make mutate statments from Excel-file -----------------------------------
 
+categorization.Blad1 <- readxl::read_excel("data/categorization.xlsx")
+cache("categorization.Blad1")
+
 # Define it!
 categorization <-
   categorization.Blad1 %>%

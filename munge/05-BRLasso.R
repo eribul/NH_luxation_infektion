@@ -3,40 +3,22 @@
 if (!exists("infection_data"))
   load("cache/infection_data.RData")
 
-best_coefs_fun <- function(df_model) {
 
-  lambda <- glmnet::cv.glmnet(
-    select(df_model, -outcome) %>% as.matrix(),
-    df_model$outcome,
-    family = "binomial"
-  )$lambda.min
+lambda <- glmnet::cv.glmnet(
+  select(infection_data, -outcome) %>% as.matrix(),
+  infection_data$outcome,
+  family = "binomial"
+)$lambda.min
 
+best_coefs_tmp <-
   tibble(B = seq_len(config$Bmax)) %>%
   mutate(
-    coefs_all = map(B, ~ BR_lasso_coefs(df_model, lambda), .progress = TRUE),
+    coefs_all = map(B, ~ BR_lasso_coefs(infection_data, lambda), .progress = TRUE),
     breaks    = map_dbl(coefs_all, break_p),
     coefs     = map2(coefs_all, breaks, ~slice(.x, seq_len(.y)))
   )
-}
 
-Sys.time()
-tmp1 <- best_coefs_fun(infection_data$df_model[[1]]); cache("tmp1"); Sys.time()
-tmp2 <- best_coefs_fun(infection_data$df_model[[2]]); cache("tmp2"); Sys.time()
-
-infection_data <-
-  infection_data %>%
-  mutate(
-    best_coefs_tmp = list(tmp1, tmp2)
-  )
-
-cache("infection_data")
-
-
-
-
-
-
-
+cache("best_coefs_tmp")
 
 
 
@@ -53,26 +35,51 @@ cp2 <- function(df) {
 future::plan(multiprocess, workers = 7)
 
 # Replace old break points with new --------------------------------------------
-infection_data$best_coefs_tmp[[1]]$breaks <-
-  infection_data$best_coefs_tmp[[1]]$coefs_all %>%
+best_coefs_tmp$breaks <-
+  best_coefs_tmp$coefs_all %>%
   furrr::future_map_dbl(cp2, .progress = TRUE)
-
-infection_data$best_coefs_tmp[[2]]$breaks <-
-  infection_data$best_coefs_tmp[[2]]$coefs_all %>%
-  furrr::future_map_dbl(cp2, .progress = TRUE)
-
 
 # Include variables based on new break points
-infection_data$best_coefs_tmp[[1]]$coefs <-
+best_coefs_tmp$coefs <-
   with(
-    infection_data$best_coefs_tmp[[1]],
+    best_coefs_tmp,
     map2(coefs_all, breaks, ~slice(.x, seq_len(.y)))
   )
 
-infection_data$best_coefs_tmp[[2]]$coefs <-
-  with(
-    infection_data$best_coefs_tmp[[2]],
-    map2(coefs_all, breaks, ~slice(.x, seq_len(.y)))
-  )
 
-cache("infection_data")
+
+# Different models --------------------------------------------------------
+
+brlasso_selection_n <-
+  round(c(main    = .1, reduced = .8) * config$Bmax)
+cache("brlasso_selection_n")
+
+# All variables selected at least once
+brlasso_tbl_selected <-
+  best_coefs_tmp %>%
+  unnest(coefs) %>%
+  count(variable, sort = TRUE)
+
+# List of variables selected every time
+best_coefs_reduced <-
+  brlasso_tbl_selected %>%
+  # Urspr föreslogs intersect (variabler som tas varje gång) OBS!!!!!!!!!
+  filter(n >= brlasso_selection_n["reduced"]) %>%
+  select(variable) %>%
+  pluck(1)
+
+# All variables selected according to lower threshold
+best_coefs <-
+  brlasso_tbl_selected %>%
+  # Urspr föreslogs intersect (variabler som tas varje gång) OBS!!!!!!!!!
+  filter(n >= brlasso_selection_n["main"]) %>%
+  select(variable) %>%
+  pluck(1)
+
+coefs_selected <-
+  list(
+    brlasso_tbl_selected = brlasso_tbl_selected,
+    best_coefs_reduced = best_coefs_reduced,
+    best_coefs = best_coefs
+  )
+cache("coefs_selected")
