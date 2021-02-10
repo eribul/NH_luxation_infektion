@@ -10,6 +10,7 @@ diagnostics/README_cache/*
 cache/*
 !cache/fit_brl_reduced_lean.RData
 !cache/categorization.*
+!cache/model_reduced_lean.RData
 reports/~$rticle.docx
 cache_backup
 cache_T846F

@@ -1,7 +1,7 @@
 ---
 title: "External validation"
 author: "Erik Bulow"
-date: '2021-02-05'
+date: '2021-02-10'
 output: 
 #  github_document:
 #    toc: yes
@@ -40,7 +40,7 @@ if (length(pkgsinst)) install.packages(pkgsinst)
 purrr::walk(pkgs, ~suppressPackageStartupMessages(library(., character.only = TRUE)))
 ```
 
-Load the exported models to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)). This is a nested data frame with one row for each prediction period (90 days and 2 years). Column `fit` contains `glm` objects stripped from any personal patient data.
+Load the exported models to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)).
 
 
 ```r
@@ -121,7 +121,7 @@ knitr::include_graphics("../graphs/flowchart.png")
 
 ## Outcome
 
-The outcome variables is simply called `outcome` . This is a logical/boolean (or 0/1-numeric) variable indicating whether the patient got PJI within 90 days after THA (`TRUE`/1) or not (`FALSE`/0).
+The outcome variable is simply called `outcome` . This is a logical/boolean (or 0/1-numeric) variable indicating whether the patient got PJI within 90 days after THA (`TRUE`/1) or not (`FALSE`/0).
 
 We identified PJI within 90 days as either the primary or secondary reason for reoperation performed within this time frame, as recorded to SHAR, or if a relevant ICD-10/NOMESCO code was recorded during a hospital visit/admission during this period.
 
@@ -409,7 +409,7 @@ AUCci
 ```
 
 ```
-## 95% CI: 0.6645-0.6853 (100 non-stratified bootstrap replicates)
+## 95% CI: 0.6674-0.6864 (100 non-stratified bootstrap replicates)
 ```
 
 ```r
@@ -472,7 +472,7 @@ AUCci2
 ```
 
 ```
-## 95% CI: 0.6644-0.6853 (100 non-stratified bootstrap replicates)
+## 95% CI: 0.6639-0.6846 (100 non-stratified bootstrap replicates)
 ```
 
 ```r
@@ -530,7 +530,7 @@ AUCci3
 ```
 
 ```
-## 95% CI: 0.6628-0.6863 (100 non-stratified bootstrap replicates)
+## 95% CI: 0.6652-0.6888 (100 non-stratified bootstrap replicates)
 ```
 
 ```r
