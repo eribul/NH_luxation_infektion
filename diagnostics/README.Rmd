@@ -45,7 +45,7 @@ if (length(pkgsinst)) install.packages(pkgsinst)
 purrr::walk(pkgs, ~suppressPackageStartupMessages(library(., character.only = TRUE)))
 ```
 
-Load the exported models to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)).
+Load the exported model to validate (also found "manually" at [Github](https://github.com/eribul/NH_luxation_infektion/blob/master/cache/ext_val_required_data.RData)).
 
 ```{r}
 # Load the exported model object
