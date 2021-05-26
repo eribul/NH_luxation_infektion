@@ -1,13 +1,13 @@
-version:             0.10.0
-data_loading:        FALSE
+version: 0.10.1
+data_loading: FALSE
 data_loading_header: TRUE
 data_ignore:
-cache_loading:       FALSE
-recursive_loading:   TRUE
-munging:             FALSE
-logging:             FALSE
-logging_level:       INFO
-load_libraries:      TRUE
+cache_loading: FALSE
+recursive_loading: TRUE
+munging: FALSE
+logging: FALSE
+logging_level: INFO
+load_libraries: TRUE
 libraries:
   bookdown,
   broom,
@@ -41,11 +41,12 @@ libraries:
   zoo,
   biglasso,
   mcp,
-  magrittr
-as_factors:                TRUE
+  magrittr,
+  rms
+as_factors: TRUE
 attach_internal_libraries: FALSE
-cache_loaded_data:         TRUE
-sticky_variables:          NONE
-tables_type:               tibble
-underscore_variables:      FALSE
-cache_file_format:         RData
+cache_loaded_data: TRUE
+sticky_variables: NONE
+tables_type: tibble
+underscore_variables: FALSE
+cache_file_format: RData

@@ -18,8 +18,7 @@ model_vars <-
 # Export data frame of data needed for external validation
 ext_val_required_data <-
   df %>%
-  select(one_of(model_vars)) %>%
-  group_by(P_DiaGrp) %>%
-  slice(1:3)
+  select(one_of(model_vars))
 
 cache("ext_val_required_data")
+

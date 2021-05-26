@@ -16,6 +16,7 @@ baseline <-
     )
   ) %>%
   mutate(beta = 0, `OR 95 % CI` = "(ref)", p = "")
+cache("baseline")
 
 
 # Prepare temp table ------------------------------------------------------
@@ -73,6 +74,7 @@ coefs_text <-
       variable == "cns disease" ~ "CNS disease",
       variable == "pancreatiinsufficiency" ~ "pancreatic insufficiency",
       variable == "rheumatidisease" ~ "rheumatic disease",
+      variable == "lung airways disease" ~ "lung and airways disease"
       TRUE ~ variable
     ),
     ordinary = fct | variable == "age"
@@ -83,7 +85,7 @@ coefs_text <-
   summarise(
     text = if_else(
       !ordinary,
-      paste("the precense of", glue::glue_collapse(variable, sep = ", ", last = " or ")),
+      paste("the presence of", glue::glue_collapse(variable, sep = ", ", last = " or ")),
       paste(variable, collapse = ", ")
     )
   ) %>%
@@ -94,3 +96,5 @@ coefs_text <-
   deframe()
 
 cache("coefs_text")
+
+

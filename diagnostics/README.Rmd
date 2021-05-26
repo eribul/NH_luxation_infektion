@@ -89,7 +89,7 @@ coder::hip_ae_hailer %>%
 
 ## Predictors
 
-The data to evaluate (in addition to the respective `outcome` variable) should look like this:
+The data to evaluate (in addition to the `outcome` variable) should look like this:
 
 ```{r}
 head(ext_val_required_data) 

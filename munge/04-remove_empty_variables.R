@@ -107,7 +107,8 @@ cache("infection_data")
 # Save list of excluded co-morbidities for presentation
 excl_factors <-
   comb_rm$lgl_text %>%
+  tolower() %>%
   {gsub("pancreatii", "pancreatic i", .)} %>%
-  {gsub("AIDS/HIV hiv", "AIDS/HIV", .)}
+  {gsub("aids/hiv hiv", "AIDS/HIV", .)}
 
 cache("excl_factors")

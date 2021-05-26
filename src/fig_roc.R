@@ -12,21 +12,41 @@ shar_roc <-
     Model = model_names(Model)
   )
 
+
+load("validation/export_DK.RData")
+dk <-
+  roc_plot_coords %>%
+  mutate(Model = "Reduced model (DK)") %>%
+  rename(
+    specificity = specificities,
+    sensitivity = sensitivities
+  )
+
+ggdata <-
+  bind_rows(
+    Sweden  = shar_roc,
+    Denmark = filter(shar_roc, Model == "Reduced model"),
+    Denmark = dk,
+    .id = "country"
+  ) %>%
+  mutate(country = factor(country, c("Sweden", "Denmark")))
+
 # Figure ------------------------------------------------------------------
 
-fig_roc <-
-  shar_roc %>%
+ggdata %>%
   ggplot(aes(1 - specificity, sensitivity, col = Model)) +
-  geom_path(size = 1) +
+  geom_path() +
   geom_abline(intercept = 0, slope = 1, color = "grey", linetype = 2) +
-  theme_minimal(15) +
+  theme_minimal(10) +
   theme(
     legend.position = "bottom", # c(1, 0),
     #legend.justification = c(1, 0),
-    legend.title = element_blank()
+    legend.title = element_blank(),
+    legend.text = element_text(size = 4.5)
   ) +
   scale_x_continuous(labels = scales::percent) +
-  scale_y_continuous(labels = scales::percent)
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~ country)
 
 
-ggsave("graphs/roc.png", fig_roc, height = 15, width = 15, units = "cm")
+ggsave("graphs/roc.png", height = 10, width = 15, units = "cm", dpi = 900)

@@ -33,13 +33,19 @@ future::plan("multiprocess", workers = 2)
 
 models <-
   tribble(
-    ~Model,         ~fit,
-    "Reduced model",glmdf(form(coefs_selected$best_coefs_reduced)),
-    "Main model",   glmdf(form(coefs_selected$best_coefs)),
-    "Charlson",     glmdf("outcome ~ CCI_index_quan_original"),
-    "Elixhauser",   glmdf("outcome ~ ECI_index_sum_all"),
-    "Rx Risk V",    glmdf("outcome ~ Rx_index_pratt"),
-    "ASA class",    glmdf("outcome ~ P_ASA"),
+    ~Model,                    ~ fit,
+    "Reduced model",           glmdf(form(coefs_selected$best_coefs_reduced)),
+    "Main model",              glmdf(form(coefs_selected$best_coefs)),
+    "Charlson",                glmdf("outcome ~ CCI_index_quan_original"),
+    "Charlson + Age + Sex",    glmdf("outcome ~ CCI_index_quan_original + P_Age + P_Sex"),
+    "Elixhauser",              glmdf("outcome ~ ECI_index_sum_all"),
+    "Elixhauser + Age + Sex",  glmdf("outcome ~ ECI_index_sum_all + P_Age + P_Sex"),
+    "Rx Risk",                 glmdf("outcome ~ Rx_index_pratt"),
+    "Rx Risk + Age + Sex",     glmdf("outcome ~ Rx_index_pratt"),
+    "ASA",                     glmdf("outcome ~ P_ASA"),
+    "ASA + Age + Sex",         glmdf("outcome ~ P_Age + P_Sex + P_ASA"),
+    "BMI + Age + Sex",         glmdf("outcome ~ P_Age + P_Sex + P_BMI"),
+    "ASA + BMI + Age + Sex",   glmdf("outcome ~ P_Age + P_Sex + P_ASA + P_BMI")
   ) %>%
   mutate(
     tidy          = map(fit, broom::tidy, conf.int = TRUE, exponentiate = TRUE),
@@ -52,7 +58,7 @@ models <-
     AUCci         = furrr::future_map(
                       ROC,
                       pROC::ci.auc,
-                      method = "bootstrap",
+                      method = "delong",
                       boot.stratified = FALSE,
                       .progress = TRUE,
                       .options = furrr_options(seed = TRUE)
@@ -65,8 +71,31 @@ models <-
   ) %>%
   select(-pred, -ROC, -AUCci)
 
-cache("models")
+dk_models <-
+  tribble(
+    ~Model,                    ~AUC_est,   ~AUC_lo,   ~AUC_hi,
+    "Reduced model",          0.6644978, 0.6383293, 0.6906663,
+    "Reduced model (DK)",     0.6718784, 0.6458812, 0.6978755,
+    "ASA",                    0.5827459, 0.5593311, 0.6061608,
+    "ASA + Age + Sex",        0.6050408, 0.5795086, 0.6305730,
+    "Elixhauser",             0.5199970, 0.4986380, 0.5413560,
+    "Elixhauser + Age + Sex", 0.5730051, 0.5457002, 0.6003100,
+    "Charlson",               0.5279087, 0.5083930, 0.5474245,
+    "Charlson + Age + Sex",   0.5731801, 0.5460877, 0.6002724,
+    "Rx Risk",                0.5791562, 0.5504993, 0.6078130,
+    "Rx Risk + Age + Sex",    0.6023291, 0.5768198, 0.6278383,
+    "BMI + Age + Sex",        0.6398137, 0.6126092, 0.6670181,
+    "ASA + BMI + Age + Sex",  0.6464293, 0.6199900, 0.6728687
+  )
 
+models <-
+  bind_rows(
+    se = models,
+    dk = dk_models,
+    .id = "country"
+  )
+
+cache("models")
 
 # Save only the GLM models for later use ----------------------------------
 
