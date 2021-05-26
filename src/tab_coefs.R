@@ -69,12 +69,12 @@ coefs_text <-
     variable = case_when(
       variable == "bmi" ~ "body mass index (BMI)",
       variable == "diagnosis" ~ "the underlaying diagnosis for THA",
-      variable == "sex" ~ "gender",
+      # variable == "sex" ~ "gender",
       variable == "asa class" ~ "American Society for Anesthesiologists (ASA) class",
       variable == "cns disease" ~ "CNS disease",
       variable == "pancreatiinsufficiency" ~ "pancreatic insufficiency",
       variable == "rheumatidisease" ~ "rheumatic disease",
-      variable == "lung airways disease" ~ "lung and airways disease"
+      variable == "lung airways disease" ~ "lung and airways disease",
       TRUE ~ variable
     ),
     ordinary = fct | variable == "age"
