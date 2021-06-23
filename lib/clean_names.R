@@ -9,7 +9,7 @@ clean_names <- function(x, firstupper = TRUE, lvls = TRUE) {
   {gsub("cns",     "CNS",         .)} %>%
   {gsub("\\.",     " ",           .)} %>%
   {gsub("  ",      " ",           .)} %>%
-  {gsub("AVN",     "\\(AVN\\)",   .)} %>%
+  {gsub(" AVN$",   "\\(AVN\\)",   .)} %>%
   {gsub("Rheumatidisease", "Rheumatic disease",   .)} %>%
   {paste0(toupper(substr(., 1, 1)), substring(., 2))} %>%
   trimws()

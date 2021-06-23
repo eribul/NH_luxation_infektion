@@ -56,7 +56,7 @@ filters <-
 
     tibble(
       step = 3,
-      excl = "Diagnosis: Fracture/tumour/unspecified/unknown.",
+      excl = "Diagnosis: Fracture/tumour/unspecified/unknown",
       incl = "Elective THA",
       expr = list(quo(!P_DiaGrp %in% c(
         "Akut trauma, höftfraktur",
@@ -193,7 +193,7 @@ nodes <-
   ) %>%
   mutate(
     shape     = "rectangle",
-    width     = if_else(startsWith(name, "incl"), 1.75, 3.25),
+    width     = if_else(startsWith(name, "incl"), 1.75, 3.5),
     color     = "Black",
     fillcolor = "White",
     fontcolor = "Black"
@@ -239,5 +239,6 @@ graph <-
   add_global_graph_attrs("fixedsize", "FALSE", "node") # Nice edge height
 
 export_graph(graph, "graphs/flowchart.png", "png", width = 1024)
+export_graph(graph, "graphs/flowchart.pdf", "pdf")
 # render_graph(graph)
 

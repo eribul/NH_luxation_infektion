@@ -10,9 +10,9 @@ get_beltdata <- function(cb) {
   )
 }
 
-df_calibration <-
+df_calibration_se <-
   models %>%
-  filter(Model == "Reduced model") %>%
+  filter(Model == "Reduced model", country == "se") %>%
   mutate(
     cal_belt = furrr::future_map(
       obspred, ~ givitiR::givitiCalibrationBelt(
@@ -24,23 +24,36 @@ df_calibration <-
   select(Model, cal_belt) %>%
   unnest(cal_belt)
 
+
+# Danish ------------------------------------------------------------------
+
+source("validation/calibration_DK.txt")
+
+
 # Make figure -------------------------------------------------------------
-calplot <- function(xlim = c(0, 0.1), ylim = c(0, 0.1)) {
-  ggplot(df_calibration, aes(x, ymin = L, ymax = U)) +
-  geom_ribbon(alpha = .3) +
-  geom_abline(aes(intercept = 0, slope = 1)) +
-  theme_minimal(15) +
-  scale_x_continuous(labels = scales::percent_format(1)) +
-  scale_y_continuous(labels = scales::percent_format(1)) +
-  coord_cartesian(xlim, ylim) +
-  xlab("Predicted probability") +
-  ylab("Observed proportion") +
-  theme(
-    legend.position = c(1, 0),
-    legend.justification = c(1, 0),
-    legend.title = element_blank()
-  )
-}
+bind_rows(
+  "Internal (SE)" = df_calibration_se,
+  "External  (DK)" = get_beltdata(calibration),
+  "Re-calibrated (DK)" = get_beltdata(calibration2),
+  .id = "country"
+) %>%
+ggplot(aes(x, ymin = L, ymax = U, fill = country)) +
+geom_ribbon(alpha = .5) +
+geom_abline(aes(intercept = 0, slope = 1)) +
+theme_minimal(15) +
+scale_x_continuous(labels = scales::percent_format(1), limits = c(0, .1), breaks = seq(0, .1, .02)) +
+scale_y_continuous(labels = scales::percent_format(1), limits = c(0, .1), breaks = seq(0, .1, .02)) +
+xlab("Predicted probability") +
+ylab("Observed proportion") +
+theme(
+  legend.position = c(1, 0),
+  legend.justification = c(1, 0),
+  legend.title = element_blank(),
+  panel.grid.minor = element_blank()
+)
 
 
-ggsave("graphs/calibration.png", calplot(), height = 10, width = 10 , units = "cm")
+ggsave("graphs/calibration.png", height = 10, width = 10 , units = "cm")
+ggsave("graphs/calibration.pdf", height = 10, width = 10 , units = "cm")
+
+

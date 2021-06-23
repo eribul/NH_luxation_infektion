@@ -83,3 +83,9 @@ ggsave(
   gridExtra::grid.arrange(fig_separation_hist, fig_separation_density, nrow = 1),
   height = 10, width = 20, units = "cm"
 )
+
+ggsave(
+  "graphs/separation.pdf",
+  gridExtra::grid.arrange(fig_separation_hist, fig_separation_density, nrow = 1),
+  height = 10, width = 22, units = "cm"
+)

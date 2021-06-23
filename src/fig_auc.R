@@ -13,12 +13,24 @@ data_auc_ci <-
   select(country, Model, starts_with("AUC")) %>%
   mutate(
     Model  = gsub("Reduced model$", "Reduced model (SE)", Model),
-    Model  = reorder(Model, AUC_est),
     ci     = sprintf("95 %% CI: %.2f to %.2f", AUC_lo, AUC_hi),
     text1  = sprintf("(AUC = %.2f, %s)", AUC_est, ci),
     text2  = sprintf("AUC = %.2f (%s)", AUC_est, ci),
     country = factor(country, c("se", "dk"), c("Sweden", "Denmark"))
   )
+
+
+# Levels based on the Swedish rank order of the models
+# lvls <- levels(with(filter(data_auc_ci, country == "se"), reorder(Model, AUC_est)))
+lvls <-
+  levels(
+    with(
+      filter(data_auc_ci, country == "Sweden" | Model == "Reduced model (DK)"),
+      reorder(Model, AUC_est, order = TRUE)
+    )
+  )
+data_auc_ci$Model <- factor(data_auc_ci$Model, lvls, ordered = TRUE)
+
 
 cache("data_auc_ci")
 
@@ -59,5 +71,6 @@ ggplot(data_auc_ci, aes(Model, AUC_est)) +
   facet_wrap(~ country, scales = "free_x")
 
 ggsave("graphs/auc_ci.png", width = 15, height = 10, units = "cm")
+ggsave("graphs/auc_ci.pdf", width = 15, height = 10, units = "cm")
 
 options(digits = digs$digits)

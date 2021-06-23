@@ -68,10 +68,10 @@ coefs_text <-
     variable = tolower(variable),
     variable = case_when(
       variable == "bmi" ~ "body mass index (BMI)",
-      variable == "diagnosis" ~ "the underlaying diagnosis for THA",
+      variable == "diagnosis" ~ "the underlying diagnosis for THA",
       # variable == "sex" ~ "gender",
       variable == "asa class" ~ "American Society for Anesthesiologists (ASA) class",
-      variable == "cns disease" ~ "CNS disease",
+      variable == "cns disease" ~ "central nervous system (CNS) disease",
       variable == "pancreatiinsufficiency" ~ "pancreatic insufficiency",
       variable == "rheumatidisease" ~ "rheumatic disease",
       variable == "lung airways disease" ~ "lung and airways disease",
@@ -94,6 +94,15 @@ coefs_text <-
   arrange(!ordinary) %>%
   summarise(text = paste(text, collapse = ", and ")) %>%
   deframe()
+
+coefs_text <- c(
+  long = coefs_text,
+  short =
+    gsub("\\(|\\)|body mass index|American Society for Anesthesiologists|central nervous system|", "", coefs_text) %>%
+    {gsub("  ", " ", .)}
+)
+
+
 
 cache("coefs_text")
 

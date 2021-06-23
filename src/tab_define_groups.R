@@ -16,6 +16,7 @@ tab_categorization <-
 
   # To test without Rx Risk V
   select(-Rx) %>%
-  filter(!(is.na(Charlson) & is.na(Elixhauser)))
+  filter(!(is.na(Charlson) & is.na(Elixhauser))) %>%
+  mutate(across(c(Charlson, Elixhauser), ~ gsub("Aids/hiv", "AIDS/HIV", .)))
 
 cache("tab_categorization")

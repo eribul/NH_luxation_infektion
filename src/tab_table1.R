@@ -107,6 +107,8 @@ dk1 <-
   docxtractr::read_docx("validation/DK_table1_20210325.docx") %>%
   docxtractr::docx_extract_tbl()
 
+
+
 names(dk1) <- c("what", "No_PJI_N", "No_PJI_prop", "PJI_N", "PJI_prop", "Tot_N", "Tot_prop")
 dk1 <- dk1[-(1:2), ] # Remove headers and age (which should not be categorized)
 
@@ -116,10 +118,14 @@ dk1 <- mutate(dk1, across(-what, as.numeric))
 # Identifiera namn på faktorer till skillnad från levels
 dk1$factors <- dk1$what %in% dk1$what[which(is.na(dk1$Tot_N)) -1]
 
-
+# Save empty row for Elixhauser == 0
+elix0 <- filter(dk1, what == "0") %>% slice(1)
 
 dk2 <-
   dk1 %>%
+  distinct() %>%
+  # 0-raden för Elixhauser försvinner och behöver läggas tillbaka
+  add_row(elix0, .after = which(.$what == "Elixhauser")[1]) %>%
   # FLytta ner icke-NA-värden till resp level
   mutate(across(c(-what, -factors), zoo::na.locf)) %>%
   # Ta bort värdena från faktor-rubriken
@@ -175,11 +181,11 @@ dk2 <-
 # Slå samman --------------------------------------------------------------
 
 # Check that no levels differ
-setdiff(table1$what, dk2$what)
-setdiff(table1$level, dk2$level)
+setdiff(se_table1$what, dk2$what)
+setdiff(se_table1$level, dk2$level)
 
-setdiff(dk2$what, table1$what)
-setdiff(dk2$level, table1$level)
+setdiff(dk2$what, se_table1$what)
+setdiff(dk2$level, se_table1$level)
 
 table1 <-
   left_join(se_table1, dk2) %>%

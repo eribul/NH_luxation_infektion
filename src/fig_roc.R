@@ -50,3 +50,4 @@ ggdata %>%
 
 
 ggsave("graphs/roc.png", height = 10, width = 15, units = "cm", dpi = 900)
+ggsave("graphs/roc.pdf", height = 10, width = 17, units = "cm")

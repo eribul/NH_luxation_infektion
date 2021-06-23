@@ -78,7 +78,7 @@ plot_data <- function(results) {
       !grepl("Intercept", coef),
     ) %>%
     pivot_longer(-coef) %>%
-    filter(value > -5) %>%
+    # filter(value > -5) %>%
     mutate(
       coef = gsub("coefficients\\.", "", coef),
       coef = clean_names(coef),
@@ -95,22 +95,29 @@ ci_data <- function(d) {
 plot_help <- function(d, ci, title) {
   d %>%
     ggplot(aes(coef, value, color = coef)) +
-    geom_point(position = position_dodge2(1), alpha = .33, show.legend = FALSE) +
-    geom_boxplot(alpha = .5, size = 1, show.legend = FALSE) +
-    geom_point(aes(shape = orig), data = cfs, size = 5, alpha = 1, color = "red") +
-    geom_point(data = ci, size = 5, alpha = 1, color = "black") +
-    geom_hline(aes(yintercept = 0), linetype = "dotted", color = "orange", size = 3) +
-    coord_flip() +
+    geom_point(position = position_dodge2(1), size = .5, alpha = .1, show.legend = FALSE) +
+    # geom_boxplot(alpha = .5, size = 1, show.legend = FALSE) +
+    geom_point(aes(shape = orig), data = cfs, size = 2, alpha = 1, color = "red") +
+    geom_point(data = ci, size = 2, alpha = 1, color = "black") +
+    geom_hline(aes(yintercept = 0), linetype = "dotted", color = "orange") +
+    coord_flip(, c(-1, 2)) +
     theme_minimal() +
-    theme(legend.position = c(0, 1), legend.justification = c(0, 1))
-    ggtitle(title)
+    theme(
+      legend.position = c(0, 1),
+      legend.justification = c(0, 1),
+      legend.title = element_blank(),
+      axis.title.y = element_blank()
+    ) +
+    ylab("Estimated coefficient values")
+    # ggtitle(title)
 }
 
 plot_result <- function(result, title) {
   d  <- plot_data(result)
   ci <- ci_data(d)
   p  <- plot_help(d, ci, title)
-  ggsave(paste0(title, ".png"), height = 20, width = 40, units = "cm")
+  ggsave(paste0(title, ".png"), height = 10, width = 20, units = "cm")
+  ggsave(paste0(title, ".pdf"), height = 10, width = 20, units = "cm")
   list(d = d, ci = ci, p = p)
 }
 
