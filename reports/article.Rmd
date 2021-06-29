@@ -1,6 +1,6 @@
 ---
 title: "Prediction of Early Periprosthetic Joint Infection after Total Hip Arthroplasty: Development and External Validation of a Multivariable Model Based on Observational Registry data from Sweden and Denmark"
-author: Erik Bülow,^1,2^ Ina Trolle Andersen,^3^ Ute Hahn,^3,4^  Ola Rolfson,^1,2^  Alma Besic Pedersen,^3,5^ Nils P. Hailer^6^
+author: Erik Bülow,^1,2^ Ute Hahn,^3,4^ Ina Trolle Andersen,^3^ Ola Rolfson,^1,2^  Alma Besic Pedersen,^3,5^ Nils P. Hailer^6^
 date: '`r Sys.Date()`'
 bibliography: 
 #  H:/zotero_lib.bib
