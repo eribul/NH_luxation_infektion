@@ -45,7 +45,7 @@ Vectorize(load, "file")(cache_files[filesizes < 10], .GlobalEnv)
 6.  Department Surgical Sciences/Orthopaedics, Uppsala University Hospital, Uppsala, Sweden
 
 - EB: Statistician, MSc, PhD, erik.bulow@gu.se
-- IT: Statistician, MSc, PhD, ita@clin.au.dk
+- ITA: Statistician, MSc, PhD, ita@clin.au.dk
 - UH: Biostatistician, PhD, associate professor, ute@math.au.dk
 - OR: Orthopaedic consultant, PhD, professor, register director, ola.rolfson@gu.se
 - ABP: Orthopaedic consultant, PhD, DMSc, professor, abp@clin.au.dk
@@ -55,7 +55,7 @@ Vectorize(load, "file")(cache_files[filesizes < 10], .GlobalEnv)
 
 **Guarantor:** NPH, as the principal investigator, affirms that this manuscript is an honest, accurate, and transparent account of the study being reported; that no important aspects of the study have been omitted; and that any discrepancies from the study as planned have been explained.
 
-**Word count:** 3,583
+**Word count:** XXX
 
 ##### PAGE BREAK
 
@@ -92,19 +92,19 @@ dkauc <- function(model) {
 
 # Abstract
 
-**OJECTIVE:** We developed a parsimonious prediction model for prosthesis joint infection (PJI) within 90 days after total hip arthroplasty (THA).
+**OJECTIVE:** To develop a parsimonious risk prediction model for periprosthetic joint infection (PJI) within 90 days after total hip arthroplasty (THA).
 
-**DESIGN:** Logistic LASSO regression with bootstrap ranking applied to prospectively collected patient data from multiple linked national registers. 
+**DESIGN:** Cohort study. 
 
-**SETTING:** Model derivation and internal (external) validation for all hospitals performing THA in Sweden (Denmark).  
+**SETTING:** Register data from Sweden for model derivation and (from Denmark for external) validation.  
 
-**PARTICIPANTS:** `r nmbr(N_shar)` patients from the Swedish Hip Arthroplasty Register with elective THA 2008-2015, and `r nmbr(N_dk)` patients from the Danish Hip Arthroplasty Register with THA 2016--September 2018. 
+**PARTICIPANTS:** `r nmbr(N_shar)` patients from the Swedish Hip Arthroplasty Register, and `r nmbr(N_dk)` patients from the Danish Hip Arthroplasty Register operated with elective THA. 
 
-**MAIN OUTCOME MEASURE:** PJI as identified either as reason for re-operation, or as recorded by ICD-10 or NOMESCO codes at later hospital visits.
+**MAIN OUTCOME MEASURE:** Logistic LASSO regression with bootstrap ranking was used to develop a risk prediction model for PJI within 90 days based on the Swedish cohort, followed by external validation on the Danish cohort.
 
-**RESULTS:** Incidence of PJI was `r crude_rate * 100` %  in Sweden and 2.17 % in Denmark. A model with the `r coefs_text[["long"]]`, had an `r get_auc("Reduced model (SE)", "2")` in Sweden, and `r sub("^AUC = ", "", get_auc("Reduced model (SE)", "2", Country = "Denmark"))` in Denmark. This was superior to traditional models based on ASA class, Charlson, Elixhauser, or the Rx Risk V comorbidity indices. Internal calibration was good for predicted probabilities up to 10 %.
+**RESULTS:** Incidence of PJI was `r crude_rate * 100` %  in Sweden and 2.17 % in Denmark. A model with the `r coefs_text[["abstract"]]` had an area under the curve (AUC) of `r gsub("AUC = ", "", get_auc("Reduced model (SE)", "2"))` in Sweden and `r sub("^AUC = ", "", get_auc("Reduced model (SE)", "2", Country = "Denmark"))` in Denmark. This was superior to traditional models based on ASA class, Charlson, Elixhauser, or the Rx Risk V comorbidity indices. Internal calibration was good for predicted probabilities up to 10 %.
 
-**CONCLUSION:** Our model, based on easily accessible data available before THA, had superior discriminatory ability compared to ASA class alone or more complex comorbidity indices. It had good calibration and was externally validated in Denmark. We provide a web-based calculator (https://erikbulow.shinyapps.io/thamortpred/) to enable shared decision making by patients and surgeons. 
+**CONCLUSION:** A new PJI prediction model based on easily accessible data available before THA, has been developed and externally validated. The model had superior discriminatory ability compared to ASA class alone or more complex comorbidity indices and had good calibration. We provide a web-based calculator (https://erikbulow.shinyapps.io/thamortpred/) to facilitate shared decision making by patients and surgeons. 
 
 ##### PAGE BREAK
 
@@ -114,12 +114,13 @@ dkauc <- function(model) {
 ## What is already known on this topic
 
 - Periprosthetic joint infection (PJI) is the most devastating of early complications after total hip arthroplasty (THA).
-- Attempts have been made to develop individualized risk prediction models for clinical usage in the US and Australia.
-- None of those models have gained general acceptance due to limited samples, low discriminating ability, sub-optimal calibration or absence of external model validation. 
+- Attempts have been made to develop individualized risk prediction models for clinical usage in the US and Australia but none of those models has gained general acceptance due to limited samples, low discriminating ability, sub-optimal calibration or absence of external model validation. 
 
 ## What this study adds
-- Our model, based on easily accessible data available before THA, had superior discriminatory ability compared to more complex comorbidity indices. 
-- Our model had good calibration, was externally validated in Denmark, and can be used in clinical practice by a simple web calculator (https://erikbulow.shinyapps.io/thamortpred/).
+- Our prediction model was derived on a Swedish cohort and externally validated on a Danish cohort
+- Our model is based on easily accessible data that are available before THA
+- Compared to more complex comorbidity indices or to ASA class, our model had superior discriminatory ability and good calibration
+- We provide a simple web calculator for easy use in clinical practice (https://erikbulow.shinyapps.io/thamortpred/).
 
 
 ##### PAGE BREAK
@@ -136,7 +137,7 @@ We used data from the Swedish Hip Arthroplasty Register (SHAR) for model derivat
 
 ## Derivation cohort (Sweden)
 
-The derivation cohort was obtained from SHAR `r period`, with the choice of 2008 as the starting year because registration of ASA class and body mass index (BMI) was initiated then. Deterministic data linkage was achieved by using personal identity numbers that are assigned to all Swedish residents at birth or immigration.[@Ludvigsson2009; @Cnudde2016] The diagnosis underlying the index THA procedure (categorized into `r glue::glue_collapse(tolower(levels(df$P_DiaGrp)), ", ", last = " and ") %>% {gsub("\\(avn\\)", "[AVN]", .)}`), type of THA fixation (cemented or uncemented stem and cup respectively), age at index surgery, sex, BMI prior to surgery, ASA class at the time of surgery, type of hospital, and year of surgery, were obtained from the SHAR. Data on comorbidities recognized during one year prior to index surgery, were obtained from the National Patient Register (NPR) where diagnoses based on in- and outpatient episodes in all private and public hospitals are coded according to ICD-10 together with admission and discharge dates. Data on marital status and the educational level of patients was obtained from the longitudinal integration database for health insurance and labour market studies (LISA) from Statistics Sweden. The SHAR has completeness of 96-98 % and 100 % coverage (82 hospitals in 2020),[@Karrholm2018] the LISA has coverage of 98 % with 85 % accuracy, and completeness for the NPR is above 99 % and the positive predictive value is 85-95 %.[@Ludvigsson2011] Death dates were linked from the national population register. Only the last operated hip was considered for patients with bilateral THA.[@Bulow2020] Patients with missing information on ASA class, or an ASA class of IV and above, were excluded, as were patients with missing information on BMI or a measurement above 50. Patients with missing information on educational levels or the type of hospital performing index surgery were also excluded, as were children under the age of 18.
+The derivation cohort was obtained from SHAR `r period`, with the choice of 2008 as the starting year because registration of ASA class and body mass index (BMI) was initiated then. Deterministic data linkage was achieved by using personal identity numbers that are assigned to all Swedish residents at birth or immigration.[@Ludvigsson2009; @Cnudde2016] The diagnosis underlying the index THA procedure (categorized into `r glue::glue_collapse(tolower(levels(df$P_DiaGrp)), ", ", last = " and ") %>% {gsub("\\(avn\\)", "[AVN]", .)}`), type of THA fixation (cemented or uncemented stem and cup respectively), age at index surgery, sex, BMI prior to surgery, ASA class at the time of surgery, type of hospital, and year of surgery, were obtained from the SHAR. Data on comorbidities recognized during one year prior to index surgery, were obtained from the National Patient Register (NPR) where diagnoses based on in- and outpatient episodes in all private and public hospitals are coded according to ICD-10 together with admission and discharge dates. Data on marital status and the educational level of patients were obtained from the longitudinal integration database for health insurance and labour market studies (LISA) from Statistics Sweden. The SHAR has completeness of 96-98 % and 100 % coverage (82 hospitals in 2020),[@Karrholm2018] the LISA has coverage of 98 % with 85 % accuracy, and completeness for the NPR is above 99 % and the positive predictive value is 85-95 %.[@Ludvigsson2011] Death dates were linked from the national population register. Only the last operated hip was considered for patients with bilateral THA.[@Bulow2020] Patients with missing information on ASA class, or an ASA class of IV and above, were excluded, as were patients with missing information on BMI or a measurement above 50. Patients with missing information on educational levels or the type of hospital performing index surgery were also excluded, as were children under the age of 18.
 
 
 ## External validation cohort (Denmark)
@@ -310,7 +311,7 @@ red_FNI <-
   round()
 ```
 
-The reduced model had an `r get_auc("Reduced model (SE)", "2")`, whereas univariable models with ASA class `r get_auc("ASA")`, the Charlson comorbidity index `r get_auc("Charlson")`, the Elixhauser comorbidity index `r get_auc("Elixhauser")`, and Rx Risk V `r get_auc("Rx Risk")` had less discriminatory abilities (Fig. \@ref(fig:rocs) left panel and \@ref(fig:aucci) left panel). The univariable model with the Charlson comorbidity index had the lowest AUC and Nagelkerke's $R^2 = $ `r CCI_R2`, and compared to this model, the fraction of new information for the reduced model was `r red_FNI` % (Tab. \@ref(tab:fni)).
+The reduced model had an `r get_auc("Reduced model (SE)", "2")`, whereas univariable models with ASA class `r get_auc("ASA")`, the Charlson comorbidity index `r get_auc("Charlson")`, the Elixhauser comorbidity index `r get_auc("Elixhauser")`, and Rx Risk V `r get_auc("Rx Risk")` had less discriminatory abilities (Fig. \@ref(fig:rocs) left panel and \@ref(fig:aucci) left panel). The univariable model with the Charlson comorbidity index had the lowest AUC and Nagelkerke's $R^2 =$ `r CCI_R2`, and compared to this model, the fraction of new information for the reduced model was `r red_FNI` % (Tab. \@ref(tab:fni)).
 
 ```{r fni}
 tab_new_info %>% 
@@ -341,9 +342,9 @@ A model based on `r coefs_text[["short"]]` was better at predicting PJI within 9
 
 Our external validation is a strength, which showed that the model works equally well in Denmark, despite some perceived differences between the countries, partially explained by different coding routines in each country (Tab. \@ref(tab:tab1)). 
 
-Both Sweden and Denmark have strived for mass higher education.[@Isopahkala-Bouret2018] This is, to a higher degree achieved via the university sector in Sweden, while the educational system is more diverse in Denmark.[@Kim2002] National comparisons of educational levels are therefore difficult, since the Danish student register does not include adult- or continuing education.[@zotero-2598] Patient distribution among ASA classes were similar in both countries, but the comorbidity burden seems to differ. ICD-10 and NOMESCO codes are recorded for both in- and outpatient hospital visits in the national patient registries in both countries, but the recording of (optional) secondary diagnoses is 23 % in Denmark,[@Schmidt2015] compared to 47 % in the Swedish cohort. Serious comorbidities such as cancer, are therefore reported equally in both countries, while for example arterial hypertension, is less documented in Denmark. Also, patients with chronic conditions, such as diabetes, are more commonly treated in primary care settings in Denmark, and are therefore less reported to their national patient register.[@Schmidt2015] The RxRisk V index is a weighted index, which is difficult to compare without further analysis. Prescription patterns might differ by indications based on different national guidelines, different subsidization, and different medications sold over-the-counter. Also, the Danish, but not the Swedish, national prescription register, includes prescriptions from nursery homes and other long-term care facilities. Taken together, the similarities between the countries might be bigger than perceived by Tab. \@ref(tab:tab1).
+Both Sweden and Denmark have strived for mass higher education.[@Isopahkala-Bouret2018] This is, to a higher degree achieved via the university sector in Sweden, while the educational system is more diverse in Denmark.[@Kim2002] National comparisons of educational levels are therefore difficult, since the Danish student register does not include adult- or continuing education.[@zotero-2598] Patient distribution among ASA classes were similar in both countries, but the comorbidity burden seems to differ. ICD-10 and NOMESCO codes are recorded for both in- and outpatient hospital visits in the national patient registries in both countries, but the recording of (optional) secondary diagnoses is 23 % in Denmark,[@Schmidt2015] compared to 47 % in the Swedish cohort. Serious comorbidities such as cancer, are therefore reported equally in both countries, while for example arterial hypertension, is less documented in Denmark. Also, patients with chronic conditions, such as diabetes, are more commonly treated in primary care settings in Denmark, and are therefore less reported to their national patient register.[@Schmidt2015] The RxRisk V index is a weighted index, which is difficult to compare without further analysis. Prescription patterns might differ by indications based on different national guidelines, different subsidization, and different medications sold over-the-counter. Also, the Danish, but not the Swedish, national prescription register, includes prescriptions from nursery homes and other long-term care facilities. Taken together, the similarities between the countries might be more pronounced than indicated by Tab. \@ref(tab:tab1).
 
-However, the difference in mode of fixation, with a dominance of cemented components in Sweden, is real, and has been described elsewhere.[@Bunyoz2020]
+However, the difference in the mode of THA fixation, with a dominance of cemented components in Sweden and much more widespread usage of uncemented components in Denmark is tangible and has been described elsewhere.[@Bunyoz2020]
 
 
 ## Strengths and weaknesses in relation to other studies
@@ -389,7 +390,7 @@ Our results indicate that the risk of early PJI after THA can be pre-operatively
 
 # Contribution of authors
 
-NPH initiated the study. OR managed the ethical review board application in Sweden and ABP in Denmark. EB developed the statistical model. IT and UH performed the external validation. NPH and EB drafted, and all authors edited and finalized the manuscript.
+NPH initiated the study. OR managed the ethical review board application in Sweden and ABP in Denmark. EB developed the statistical model. UH and ITA performed the external validation. NPH and EB drafted, and all authors edited and finalized the manuscript.
 
 
 # Acknowledgement

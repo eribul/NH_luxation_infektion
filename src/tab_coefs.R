@@ -99,7 +99,8 @@ coefs_text <- c(
   long = coefs_text,
   short =
     gsub("\\(|\\)|body mass index|American Society for Anesthesiologists|central nervous system|", "", coefs_text) %>%
-    {gsub("  ", " ", .)}
+    {gsub("  ", " ", .)},
+  abstract = gsub("and the presence of [A-Za-z ,\\(\\)]*$", "and the presence of five defined comorbidities", coefs_text)
 )
 
 
