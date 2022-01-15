@@ -5,7 +5,7 @@ date: '`r Sys.Date()`'
 bibliography: 
 #  H:/zotero_lib.bib
   C:\\Users\\erik_\\Documents\\library.bib
-csl: bmj.csl
+csl: clinep.csl
 output: 
   bookdown::word_document2:
     reference_docx: article.dotm
@@ -44,18 +44,17 @@ Vectorize(load, "file")(cache_files[filesizes < 10], .GlobalEnv)
 5.  Department of Clinical Medicine, Aarhus university
 6.  Department Surgical Sciences/Orthopaedics, Uppsala University Hospital, Uppsala, Sweden
 
-- EB: Statistician, MSc, PhD, erik.bulow@gu.se
-- ITA: Statistician, MSc, PhD, ita@clin.au.dk
-- UH: Biostatistician, PhD, associate professor, ute@math.au.dk
-- OR: Orthopaedic consultant, PhD, professor, register director, ola.rolfson@gu.se
-- ABP: Orthopaedic consultant, PhD, DMSc, professor, abp@clin.au.dk
-- NPH: Orthopaedic consultant, PhD, professor, nils.Hailer@surgsci.uu.se
+- EB: Statistician, MSc, PhD, 0000-0002-9973-456X, erik.bulow@gu.se
+- ITA: Statistician, MSc, PhD, 0000-0002-8140-1548, ita@clin.au.dk
+- UH: Biostatistician, PhD, associate professor, 000-0001-5059-6293, ute@math.au.dk
+- OR: Orthopaedic consultant, PhD, professor, register director, 0000-0001-6534-1242, ola.rolfson@gu.se
+- ABP: Orthopaedic consultant, PhD, DMSc, professor, 0000-0002-3288-9401, abp@clin.au.dk
+- NPH: Orthopaedic consultant, PhD, professor, 0000-0002-3233-2638, nils.Hailer@surgsci.uu.se
 
 **Correspondence:** [erik.bulow@gu.se](mailto:erik.bulow@gu.se); +46 70 08 234 28; The Swedish Arthroplasty Register, Registercentrum Västra Götaland, SE-413 45, Sweden
 
 **Guarantor:** NPH, as the principal investigator, affirms that this manuscript is an honest, accurate, and transparent account of the study being reported; that no important aspects of the study have been omitted; and that any discrepancies from the study as planned have been explained.
 
-**Word count:** XXX
 
 ##### PAGE BREAK
 
@@ -108,22 +107,6 @@ dkauc <- function(model) {
 
 ##### PAGE BREAK
 
-
-# Summary box
-
-## What is already known on this topic
-
-- Periprosthetic joint infection (PJI) is the most devastating of early complications after total hip arthroplasty (THA).
-- Attempts have been made to develop individualized risk prediction models for clinical usage in the US and Australia but none of those models has gained general acceptance due to limited samples, low discriminating ability, sub-optimal calibration or absence of external model validation. 
-
-## What this study adds
-- Our prediction model was derived on a Swedish cohort and externally validated on a Danish cohort
-- Our model is based on easily accessible data that are available before THA
-- Compared to more complex comorbidity indices or to ASA class, our model had superior discriminatory ability and good calibration
-- We provide a simple web calculator for easy use in clinical practice (https://erikbulow.shinyapps.io/thamortpred/).
-
-
-##### PAGE BREAK
 
 # Introduction
 
@@ -229,11 +212,6 @@ The derived model was then externally validated on the Danish cohort, both with 
 ## Statistical tools
 
 We used `r R.version.string` (R Foundation for Statistical Computing, Vienna, Austria) with significant packages coder,[@Bulow2020b] decoder, furrr, pROC, rms, tidymodels and tidyverse. We build a shiny-based web calculator to aid clinical usage (https://erikbulow.shinyapps.io/thamortpred/).
-
-
-## Patient and Public Involvement
-
-Patient representatives are elected as ordinary members of the steering committees for SHAR and DHR, where the development of shared decision making has been discussed. Our web calculator will be available for (potential) patients and the public.
 
 
 ## Ethical approval
@@ -374,23 +352,38 @@ The proportion of explained variation (Nagelkerke's $R^2$ = `r subset(tab_new_in
 
 
 
-## Conclusion
+# Conclusion
 
 Our results indicate that the risk of early PJI after THA can be pre-operatively assessed by a parsimonious prediction model. We hope that this model, with its accompanying web calculator, will facilitate shared decision-making between physicians and their patients in need of THA.
 
 
+# Abbreviations 
 
-
-
-
-
+ACS NSQIP	Universal American College of Surgeons National Surgical Quality Improvement Program
+ASA		American Society for Anesthesiologists
+ATC		Anatomical Therapeutic Chemical
+AUC		area under the curve 
+BMI		body mass index
+CI		Confidence interval
+DHR		The Danish Hip Arthroplasty Register
+DK		Denmark
+FNI		fraction of new information
+ICD		International Classification of Diseases
+LASSO		least absolute shrinkage and selection operator
+LISA		The longitudinal integration database for health insurance and labour market studies
+NOMESCO		Nordic Medico-Procedural Committee
+NPR		The National Patient Register
+PJI		periprosthetic joint infection
+R2		Nagelkerke's pseudo-coefficient of determination
+ROC		Receiver operating characteristic
+SD		Standard deviation
+SE		Sweden
+SHAR		The Swedish Hip Arthroplasty Register
+THA		total hip arthroplasty
+WHO		World Health Organization
 
 
 ##### Page break
-
-# Contribution of authors
-
-NPH initiated the study. OR managed the ethical review board application in Sweden and ABP in Denmark. EB developed the statistical model. UH and ITA performed the external validation. NPH and EB drafted, and all authors edited and finalized the manuscript.
 
 
 # Acknowledgement
@@ -403,9 +396,23 @@ We would like to thank Aurelie Mailhac, statistician at the Department of Clinic
 Access to the model derivation cohort is granted after permission from the Västra Götaland Region, as the central personal data controller agency for the SHAR, in accordance with the European General Data Protection Regulation (GDPR), as well as Swedish laws and regulations (https://registercentrum.se/vara-tjaenster/datauttag/p/B1eeV66QE).
 
 
-# Disclosure
+# Funding
+
+None
+
+
+
+# Conflict of interest
 
 All authors have completed the ICMJE uniform disclosure form at http://icmje.org/downloads/coi_disclosure.docx and declare: no support from any organisation for the submitted work; OR is principal investigator for research partly founded by Pfizer; OR is register director of the Swedish Arthroplasty Register (SAR) and board member of the International Society of Arthroplasty Registries; NPH has received institutional support from Waldemar Link GmbH, and Zimmer Biomet; NPH is president of the Nordic Arthroplasty Register Association, member of the steering committee of SAR, and Co-Editor of Acta Orthopaedica; no other relationships or activities that could appear to have influenced the submitted work.
+
+
+# Contribution of authors
+
+NPH initiated the study. OR managed the ethical review board application in Sweden and ABP in Denmark. EB developed the statistical model. UH and ITA performed the external validation. NPH and EB drafted, and all authors edited and finalized the manuscript.
+
+
+
 
 
 ##### PAGE BREAK
@@ -482,7 +489,7 @@ The reduced model was then used to predict PJI also in Denmark. The coefficient 
 compare_se_dk_coefs %>% 
   rename(`95 % CI` = CI) %>% 
 knitr::kable(
-  caption = "Estimated coefficients for the reduced model based on the Swedish derivation cohort (Swedish), as well as re-estimated coefficient values based on the Danish cohort (Danish). Empirical confidence intervals (95 % CI) based on 1,000 resamples from the Swedish cohort of the same sample size (N = 18,854) as used in the Danish cohort. The Danish estimates fall within most of the CIs, indicating no support to reject the null hypothesis of no differneces between the countries."
+  caption = "Estimated coefficients for the reduced model based on the Swedish derivation cohort (Swedish), as well as re-estimated coefficient values based on the Danish cohort (Danish). Empirical confidence intervals (95 % CI) based on 1,000 resamples from the Swedish cohort of the same sample size (n = 18,854) as used in the Danish cohort. The Danish estimates fall within most of the CIs, indicating no support to reject the null hypothesis of no differneces between the countries."
 )
 ```
 
