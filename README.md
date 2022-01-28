@@ -1,4 +1,4 @@
-# NH_luxation_infektion
+# Prediction of Early Periprosthetic Joint Infection after Total Hip Arthroplasty
 Prediction models for prosthesis joint infection (PJI) within 90 days of total hip arthsoplasty (THA).
 
 The file structure follows the "ProjectTemplate" structure described here: http://projecttemplate.net/index.html
