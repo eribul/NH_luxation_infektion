@@ -137,7 +137,7 @@ The model was externally validated on the Danish cohort, both with the coefficie
 
 ## Statistical tools
 
-We used R version 4.1 (R Foundation for Statistical Computing, Vienna, Austria) with significant packages coder,[@Bulow2020b] decoder, furrr, pROC, rms, tidymodels and tidyverse. We build a shiny-based web calculator to aid clinical usage (https://erikbulow.shinyapps.io/thamortpred/) and made all R scripts publicly available (XXXXXXXXXXXXX).
+We used R version 4.1 (R Foundation for Statistical Computing, Vienna, Austria) with significant packages coder,[@Bulow2020b] decoder, furrr, pROC, rms, tidymodels and tidyverse. We build a shiny-based web calculator to aid clinical usage (https://erikbulow.shinyapps.io/thamortpred/) and made all R scripts publicly available (https://doi.org/10.5281/zenodo.5914599).
 
 
 ## Ethical approval
