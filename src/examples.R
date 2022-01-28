@@ -33,8 +33,8 @@ examples <-
   mutate(
     p = sprintf("%.1f %%", p * 100),
     desc = c(
-      "a 60-year-old female with normal BMI and primary osteoarthritis without comorbidities",
-      "an 85-year-old male with overweight, secondary osteoarthritis, psoriasis, dementia and ASA class III")
+      "a 60-year-old female with normal BMI, primary osteoarthritis and without comorbidities",
+      "an 85-year-old male with overweight, secondary osteoarthritis, psoriasis, dementia and an ASA class III")
   )
 
 cache("examples")

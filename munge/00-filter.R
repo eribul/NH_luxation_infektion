@@ -236,7 +236,8 @@ graph <-
     edges
   ) %>%
   add_global_graph_attrs("layout", "dot", "graph") %>% # Apply cluster ranking
-  add_global_graph_attrs("fixedsize", "FALSE", "node") # Nice edge height
+  add_global_graph_attrs("fixedsize", "FALSE", "node") %>% # Nice edge height
+  add_global_graph_attrs("fontname", "arial", "graph") # Arial
 
 export_graph(graph, "graphs/flowchart.png", "png", width = 1024)
 export_graph(graph, "graphs/flowchart.pdf", "pdf")

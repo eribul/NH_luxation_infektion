@@ -24,6 +24,7 @@ df_calibration_se <-
   select(Model, cal_belt) %>%
   unnest(cal_belt)
 
+cache("df_calibration_se")
 
 # Danish ------------------------------------------------------------------
 
@@ -37,10 +38,11 @@ bind_rows(
   "Re-calibrated (DK)" = get_beltdata(calibration2),
   .id = "country"
 ) %>%
-ggplot(aes(x, ymin = L, ymax = U, fill = country)) +
-geom_ribbon(alpha = .5) +
-geom_abline(aes(intercept = 0, slope = 1)) +
-theme_minimal(15) +
+pivot_longer(c(L, U)) %>%
+ggplot(aes(x, value, lwt = name, color = country)) +
+geom_abline(aes(intercept = 0, slope = 1), lty = 2, color = "grey") +
+geom_line() +
+theme_minimal(12) +
 scale_x_continuous(labels = scales::percent_format(1), limits = c(0, .1), breaks = seq(0, .1, .02)) +
 scale_y_continuous(labels = scales::percent_format(1), limits = c(0, .1), breaks = seq(0, .1, .02)) +
 xlab("Predicted probability") +
@@ -49,7 +51,8 @@ theme(
   legend.position = c(1, 0),
   legend.justification = c(1, 0),
   legend.title = element_blank(),
-  panel.grid.minor = element_blank()
+  panel.grid.minor = element_blank(),
+  panel.grid.major = element_blank()
 )
 
 
